@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puter AI Chatbot</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include Puter.js library -->
+    <script src="https://js.puter.com/v2/"></script>
+</head>
+<body>
+    <div id="app">
+        <header class="app-header">
+            <h1>🤖 Puter AI Chatbot</h1>
+            <p>Chat with AI models powered by Puter platform</p>
+            <button id="toggleParams" class="toggle-params">⚙️</button>
+        </header>
+        
+        <div class="main-chat-interface">
+            <div id="messages" class="messages"></div>
+            
+            <div class="chat-input-area">
+                <div class="input-content">
+                    <textarea id="messageInput" placeholder="Type your message..."></textarea>
+                    <div class="input-controls">
+                        <div class="model-selector">
+                            <select id="modelSelect" title="Select AI Model">
+                                <option value="gpt-4-nano">GPT-4.1 nano</option>
+                                <option value="gpt-4">GPT-4</option>
+                                <option value="claude">Claude</option>
+                                <option value="dall-e-3">DALL-E 3</option>
+                            </select>
+                        </div>
+                        <div class="file-upload">
+                            <input type="file" id="fileInput" accept="image/*" multiple>
+                            <label for="fileInput" title="Upload images">🖼️</label>
+                        </div>
+                        <button id="streamButton" class="primary">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="settingsSidebar" class="settings-sidebar">
+            <button class="close-sidebar">✖️</button>
+            <h3>Settings</h3>
+            <div class="model-params">
+                <div class="param-group">
+                    <label>Model Options:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="testMode"> Test Mode (free)</label>
+                        <label><input type="checkbox" id="streamMode"> Stream Response</label>
+                    </div>
+                </div>
+                <div class="param-group">
+                    <label for="maxTokensInput">Max Tokens:</label>
+                    <input type="number" id="maxTokensInput" value="1000" min="1" max="4000">
+                </div>
+                <div class="param-group">
+                    <label for="temperatureInput">Temperature:</label>
+                    <input type="number" id="temperatureInput" value="0.7" step="0.1" min="0" max="1">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/puterModelCapabilities.js"></script>
+    <script src="js/puterVisionHandler.js"></script>
+    <script src="js/puterUIManager.js"></script>
+    <script src="js/puterChatManager.js"></script>
+    <script src="js/puterApp.js"></script>
+</body>
+</html>

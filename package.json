@@ -1,0 +1,33 @@
+{
+  "name": "puter-ai-chatbot",
+  "version": "1.0.0",
+  "description": "A modern, multimodal AI chatbot powered by the Puter platform. Experience seamless interactions with GPT-4, Claude, and DALL-E 3 with no backend required!",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8080",
+    "dev": "npx http-server -p 8080"
+  },
+  "keywords": [
+    "puter",
+    "ai-chatbot", 
+    "multimodal",
+    "gpt-4",
+    "claude",
+    "dall-e",
+    "serverless",
+    "no-backend",
+    "javascript"
+  ],
+  "author": "Puter AI Chatbot",
+  "license": "MIT",
+  "homepage": "https://puter.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HeyPuter/puter"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
