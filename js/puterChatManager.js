@@ -7,17 +7,73 @@ class PuterChatManager {
     constructor() {
         this.conversationHistory = [];
         this.currentStreamingMessage = null;
+        this.chatMemory = null;
+    }
+
+    /**
+     * Set chat memory instance
+     */
+    setMemory(memoryInstance) {
+        this.chatMemory = memoryInstance;
+        console.log('✅ Chat memory integrated with chat manager');
     }
 
     /**
      * Send message to Puter AI services
      */
     async sendMessage(message, images = [], useStreaming = false) {
+        // Debug logging
+        console.log('🔍 ChatManager sendMessage Debug:');
+        console.log('- Message:', message);
+        console.log('- Images array:', images);
+        console.log('- Images length:', images.length);
+        console.log('- Use streaming:', useStreaming);
+
         const currentModel = puterUIManager.currentModel;
-        const model = puterModelCapabilities.getModel(currentModel);
-        
-        if (!model) {
-            throw new Error(`Unknown model: ${currentModel}`);
+
+        // Use the new model config system
+        let model;
+        if (window.puterApp && window.puterApp.modelConfig) {
+            const modelData = window.puterApp.modelConfig.getModelById(currentModel);
+            const capabilities = window.puterApp.modelConfig.getModelCapabilities(currentModel);
+
+            if (!modelData) {
+                throw new Error(`Unknown model: ${currentModel}`);
+            }
+
+            // Create a model object compatible with the old system
+            model = {
+                name: modelData.name,
+                id: modelData.id,
+                provider: modelData.provider,
+                type: capabilities.imageGeneration ? 'image-generation' : 'chat',
+                supports: {
+                    vision: capabilities.vision || capabilities.imageAnalysis,
+                    streaming: capabilities.streaming,
+                    images: capabilities.supportsImageInput
+                },
+                parameters: {
+                    model: modelData.id,
+                    max_tokens: capabilities.maxTokens || 512,
+                    temperature: 0.7
+                }
+            };
+        } else {
+            // Fallback to old system
+            model = puterModelCapabilities.getModel(currentModel);
+            if (!model) {
+                throw new Error(`Unknown model: ${currentModel}`);
+            }
+        }
+
+        // Add user message to memory if enabled
+        if (this.chatMemory && this.isMemoryEnabled()) {
+            this.chatMemory.addMessage({
+                role: 'user',
+                content: message,
+                images: images.length > 0 ? images.map(img => img.name) : undefined,
+                model: model.name
+            });
         }
 
         try {
@@ -38,32 +94,40 @@ class PuterChatManager {
     async handleChatMessage(message, images, useStreaming, model) {
         try {
             let response;
-            
+
             if (images.length > 0 && model.supports.vision) {
-                // Handle vision/image analysis - vision responses are NOT streamable
+                // Handle vision - NO STREAMING EVER
                 console.log('🖼️ Handling vision request (non-streaming)');
-                
-                // Build non-streaming options for vision
-                const visionOptions = this.buildChatOptions(model, false); // Force no streaming
-                response = await this.handleVisionChat(message, images[0], visionOptions);
-                
-                // Vision responses are always displayed directly (no streaming)
-                this.displayChatResponse(response);
-                
+
+                response = await this.handleVisionChat(message, images[0], { model: model.id });
+                this.displayChatResponse(response, model);
+
             } else if (images.length > 0 && !model.supports.vision) {
                 // Model doesn't support vision - show helpful message
-                throw new Error(`${model.name} doesn't support image analysis. Please switch to GPT-4 or Claude for vision capabilities, or continue with text-only conversation.`);
+                puterUIManager.displayMessage(
+                    `❌ ${model.name} doesn't support image analysis. Please switch to GPT-4 Vision for image capabilities, or continue with text-only conversation.`,
+                    'assistant'
+                );
+                return;
             } else {
-                // Handle regular text chat
-                const options = this.buildChatOptions(model, useStreaming);
-                response = await puter.ai.chat(message, options);
-                
-                // Regular chat can be streamed if supported and requested
-                if (useStreaming && model.supports.streaming) {
-                    await this.handleStreamingResponse(response);
-                } else {
-                    this.displayChatResponse(response);
+                // Handle text chat - TRY STREAMING
+                console.log('🔧 Handling text chat');
+
+                if (useStreaming) {
+                    try {
+                        response = await puter.ai.chat(message, { stream: true });
+                        if (response && typeof response[Symbol.asyncIterator] === 'function') {
+                            await this.handleStreamingResponse(response, model);
+                            return;
+                        }
+                    } catch (e) {
+                        console.log('🔧 Streaming failed, using direct');
+                    }
                 }
+
+                // Direct response
+                response = await puter.ai.chat(message);
+                this.displayChatResponse(response, model);
             }
 
         } catch (error) {
@@ -78,19 +142,19 @@ class PuterChatManager {
         try {
             console.log('🖼️ Processing vision request with image:', image.name);
             console.log('🔍 Using new Vision Handler...');
-            
+
             // Use the new vision handler
             if (window.puterVisionHandler) {
                 const modelName = options.model || 'gpt-4o';
                 const result = await puterVisionHandler.analyzeImage(message, image, modelName);
-                
+
                 // Return the result in a format compatible with displayChatResponse
                 return result;
             }
-            
+
             // If vision handler not available, throw an error
             throw new Error(`Vision analysis not supported. The vision handler is not available.`);
-            
+
         } catch (error) {
             console.error('Vision analysis error:', error);
             throw new Error(`Vision analysis failed: ${error.message}`);
@@ -101,12 +165,10 @@ class PuterChatManager {
      * Handle image generation
      */
     async handleImageGeneration(prompt, model) {
-        const testMode = document.getElementById('testMode').checked;
-        
         try {
-            const imageElement = await puter.ai.txt2img(prompt, testMode);
+            const imageElement = await puter.ai.txt2img(prompt, false); // Always use real generation
             puterUIManager.displayGeneratedImage(imageElement);
-            
+
         } catch (error) {
             throw new Error(`Image generation failed: ${error.message}`);
         }
@@ -115,7 +177,7 @@ class PuterChatManager {
     /**
      * Handle streaming response
      */
-    async handleStreamingResponse(response) {
+    async handleStreamingResponse(response, model = null) {
         let streamingMessageDiv = puterUIManager.displayMessage('', 'assistant', [], false); // isStreaming now always false
         let fullContent = '';
 
@@ -127,6 +189,16 @@ class PuterChatManager {
                 }
             }
 
+            // Add complete streaming response to memory if enabled
+            if (this.chatMemory && this.isMemoryEnabled() && fullContent) {
+                this.chatMemory.addMessage({
+                    role: 'assistant',
+                    content: fullContent,
+                    model: model ? model.name : 'unknown',
+                    streaming: true
+                });
+            }
+
             puterUIManager.completeStreamingMessage(streamingMessageDiv);
 
         } catch (error) {
@@ -136,22 +208,33 @@ class PuterChatManager {
     }
 
     /**
+     * Check if memory is enabled
+     */
+    isMemoryEnabled() {
+        // Memory is disabled since we removed the remember chat checkbox
+        return false;
+    }
+
+    /**
      * Display regular chat response
      */
-    displayChatResponse(response) {
+    displayChatResponse(response, model = null) {
         let content;
-        
-        // Simplified logging for performance
+
+        // Enhanced debugging for vision responses
         console.log('✅ Response received:', response?.message?.content || 'parsing...');
-        
+        console.log('🔍 Full response object:', response);
+        console.log('🔍 Response type:', typeof response);
+        console.log('🔍 Response keys:', response ? Object.keys(response) : 'null');
+
         if (typeof response === 'string') {
             content = response;
         } else if (response?.message?.content) {
             // Direct message.content (GPT-4 format)
             content = response.message.content;
-        } else if (response?.toString && response?.via_ai_chat_service) {
-            // Claude format from console logs - has toString() method and via_ai_chat_service flag
-            console.log('✅ Detected Claude response format with toString method');
+        } else if (response?.toString && typeof response.toString === 'function') {
+            // Try toString method for various response formats
+            console.log('✅ Using toString method for response');
             content = response.toString();
         } else if (Array.isArray(response) && response[0]?.text) {
             // Claude format: array with text objects
@@ -178,12 +261,12 @@ class PuterChatManager {
             // Try to stringify the response to see what we're getting
             console.warn('⚠️ Unknown response format:', response);
             console.log('🔍 Response structure:', JSON.stringify(response, null, 2));
-            
+
             // Check if response has any string properties we can use
-            const stringProps = Object.keys(response || {}).filter(key => 
+            const stringProps = Object.keys(response || {}).filter(key =>
                 typeof response[key] === 'string' && response[key].length > 0
             );
-            
+
             if (stringProps.length > 0) {
                 content = response[stringProps[0]];
                 console.log('🔧 Using property:', stringProps[0], 'with value:', content);
@@ -202,7 +285,7 @@ class PuterChatManager {
                         }
                         return result;
                     };
-                    
+
                     const flattenedData = flattenObject(response);
                     if (flattenedData.length > 0) {
                         content = flattenedData.join('\n');
@@ -215,9 +298,18 @@ class PuterChatManager {
                 }
             }
         }
-        
+
         // Content extracted successfully
-        
+
+        // Add assistant response to memory if enabled
+        if (this.chatMemory && this.isMemoryEnabled() && content) {
+            this.chatMemory.addMessage({
+                role: 'assistant',
+                content: content,
+                model: model ? model.name : 'unknown'
+            });
+        }
+
         puterUIManager.displayMessage(content, 'assistant');
     }
 
@@ -230,13 +322,13 @@ class PuterChatManager {
             ...puterUIManager.getCurrentModelParameters() // Get current UI parameter values
         };
 
-        // Add streaming if supported and requested
+        // Add streaming option for text-based models (not for vision)
         if (useStreaming && model.supports.streaming) {
-            options.stream = true;
+            // Note: stream option will be added in the actual chat call
+            // We prepare it here but don't add to options to avoid conflicts
         }
 
-        // Add other UI settings
-        options.testMode = puterUIManager.elements.testMode.checked; // Use directly from UI manager
+        // Standard DALL-E 3 generation (no test mode)
 
         return options;
     }
@@ -251,9 +343,9 @@ class PuterChatManager {
             timestamp: new Date(),
             images: images
         };
-        
+
         this.conversationHistory.push(entry);
-        
+
         // Keep history manageable (last 20 messages)
         if (this.conversationHistory.length > 20) {
             this.conversationHistory = this.conversationHistory.slice(-20);
@@ -287,7 +379,7 @@ class PuterChatManager {
 
         const dataStr = JSON.stringify(conversation, null, 2);
         const dataBlob = new Blob([dataStr], { type: 'application/json' });
-        
+
         const link = document.createElement('a');
         link.href = URL.createObjectURL(dataBlob);
         link.download = `puter-ai-conversation-${new Date().toISOString().split('T')[0]}.json`;
@@ -319,11 +411,11 @@ class PuterChatManager {
                 const bstr = atob(arr[1]);
                 let n = bstr.length;
                 const u8arr = new Uint8Array(n);
-                
+
                 while (n--) {
                     u8arr[n] = bstr.charCodeAt(n);
                 }
-                
+
                 const blob = new Blob([u8arr], { type: mime });
                 resolve(blob);
             } catch (error) {
@@ -338,9 +430,9 @@ class PuterChatManager {
      */
     handleError(error, context = '') {
         console.error(`Puter Chat Manager Error ${context}:`, error);
-        
+
         let userMessage = 'An error occurred. ';
-        
+
         if (error.message.includes('rate limit')) {
             userMessage += 'You\'ve reached the rate limit. Please wait a moment before trying again.';
         } else if (error.message.includes('authentication')) {
@@ -352,7 +444,7 @@ class PuterChatManager {
         } else {
             userMessage += error.message || 'Please try again or contact support if the issue persists.';
         }
-        
+
         puterUIManager.showError(userMessage);
     }
 }

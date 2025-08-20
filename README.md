@@ -9,7 +9,7 @@ A modern, multimodal AI chatbot powered by the Puter platform. Experience seamle
 - **Multimodal Interactions**: Text conversations, image analysis, and image generation
 - **Vision Capabilities**: Upload images and ask questions about them
 - **Streaming Responses**: Real-time response streaming for better UX
-- **Test Mode**: Free DALL-E 3 image generation for testing
+- **Professional Image Generation**: High-quality DALL-E 3 image creation
 - **Drag & Drop**: Easy image upload with drag-and-drop support
 - **Responsive Design**: Works perfectly on desktop and mobile devices
 - **No Backend Required**: Everything runs client-side with Puter.js
@@ -68,8 +68,8 @@ A modern, multimodal AI chatbot powered by the Puter platform. Experience seamle
 
 ### Image Generation
 1. Select DALL-E 3 model
-2. Enable "Test Mode" for free generation
-3. Describe the image you want
+2. Describe the image you want in detail
+3. Click send to generate your image
 4. Get AI-generated artwork
 
 ### Streaming Chat
@@ -80,7 +80,7 @@ A modern, multimodal AI chatbot powered by the Puter platform. Experience seamle
 ## ⚙️ Settings & Features
 
 ### Model Options
-- **Test Mode**: Free DALL-E 3 image generation
+- **Professional Mode**: High-quality DALL-E 3 image generation
 - **Stream Mode**: Real-time response streaming
 
 ### Keyboard Shortcuts

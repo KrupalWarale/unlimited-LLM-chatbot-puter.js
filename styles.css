@@ -6,7 +6,8 @@
     --danger-color: #ef4444;
     --warning-color: #f59e0b;
     --info-color: #3b82f6;
-    --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Enhanced gradient background */
+    --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* Enhanced gradient background */
     --surface: #ffffff;
     --surface-hover: #f3f4f6;
     --text-primary: #1a202c;
@@ -16,7 +17,8 @@
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
     --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.2);
     --radius: 8px;
-    --radius-lg: 20px; /* Increased for modern look */
+    --radius-lg: 20px;
+    /* Increased for modern look */
     --puter-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
     --system-message-bg: #e0e7ff;
     --user-message-bg: var(--primary-color);
@@ -50,9 +52,20 @@ body {
     width: 100vw;
     height: 100vh;
     position: relative;
-    background: rgba(178, 169, 239, 0.7); /* Lighten app container background for contrast */
-    border: 1.5px solid #e0e7ff; /* Subtle border for separation */
-    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.10); /* Soft shadow for depth */
+    background: rgba(178, 169, 239, 0.7);
+    /* Lighten app container background for contrast */
+    border: 1.5px solid #e0e7ff;
+    /* Subtle border for separation */
+    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.10);
+    /* Soft shadow for depth */
+
+    /* Mobile optimizations */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .chat-container {
@@ -73,7 +86,8 @@ body {
 }
 
 /* Modern Header with Animations */
-.app-header, .header {
+.app-header,
+.header {
     background: var(--puter-gradient);
     color: white;
     padding: 20px 30px;
@@ -85,14 +99,15 @@ body {
     flex-shrink: 0;
 }
 
-.app-header::before, .header::before {
+.app-header::before,
+.header::before {
     content: '';
     position: absolute;
     top: -50%;
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
     /* animation: shimmer 8s ease-in-out infinite; */
 }
 
@@ -121,20 +136,62 @@ body {
 
 /* Removed pulse keyframes */
 
-.app-header h1, .header-text h1 {
+.app-header h1,
+.header-text h1 {
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 2px;
     position: relative;
     z-index: 1;
-    color: #312e81; /* Darker color for better contrast */
+    color: #312e81;
+    /* Darker color for better contrast */
 }
 
-.app-header p, .header-text p {
+.app-header p,
+.header-text p {
     font-size: 14px;
     opacity: 0.9;
     position: relative;
     z-index: 1;
+}
+
+/* Vision Indicator in Header */
+.vision-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 12px;
+    padding: 4px 8px;
+    margin-top: 4px;
+    animation: visionGlow 2s ease-in-out infinite;
+}
+
+.vision-icon {
+    font-size: 12px;
+}
+
+.vision-text {
+    font-size: 11px;
+    font-weight: 600;
+    color: #065f46;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+@keyframes visionGlow {
+
+    0%,
+    100% {
+        background: rgba(16, 185, 129, 0.2);
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    50% {
+        background: rgba(16, 185, 129, 0.3);
+        border-color: rgba(16, 185, 129, 0.5);
+    }
 }
 
 /* Status Indicator */
@@ -162,7 +219,8 @@ body {
 }
 
 /* Enhanced Toggle Button */
-.toggle-params, .settings-btn {
+.toggle-params,
+.settings-btn {
     background: rgba(255, 255, 255, 0.2);
     border: none;
     border-radius: 12px;
@@ -178,7 +236,8 @@ body {
     color: white;
 }
 
-.toggle-params:hover, .settings-btn:hover {
+.toggle-params:hover,
+.settings-btn:hover {
     background: rgba(255, 255, 255, 0.3);
     transform: rotate(90deg);
 }
@@ -193,7 +252,8 @@ body {
 }
 
 /* Enhanced Messages Container */
-.messages, .chat-messages {
+.messages,
+.chat-messages {
     flex: 1;
     padding: 30px;
     overflow-y: auto;
@@ -204,15 +264,18 @@ body {
     margin-bottom: 0;
 }
 
-.messages::-webkit-scrollbar, .chat-messages::-webkit-scrollbar {
+.messages::-webkit-scrollbar,
+.chat-messages::-webkit-scrollbar {
     width: 6px;
 }
 
-.messages::-webkit-scrollbar-track, .chat-messages::-webkit-scrollbar-track {
+.messages::-webkit-scrollbar-track,
+.chat-messages::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.messages::-webkit-scrollbar-thumb, .chat-messages::-webkit-scrollbar-thumb {
+.messages::-webkit-scrollbar-thumb,
+.chat-messages::-webkit-scrollbar-thumb {
     background: rgba(99, 102, 241, 0.3);
     border-radius: 10px;
 }
@@ -229,6 +292,7 @@ body {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -278,7 +342,8 @@ body {
 }
 
 /* Enhanced Input Area */
-.input-area, .chat-input-area {
+.input-area,
+.chat-input-area {
     padding: 25px 30px 30px;
     background: rgba(248, 250, 252, 0.8);
     -webkit-backdrop-filter: blur(10px);
@@ -295,7 +360,8 @@ body {
     flex-wrap: wrap;
 }
 
-.suggestion, .example-btn {
+.suggestion,
+.example-btn {
     background: rgba(99, 102, 241, 0.1);
     border: 1px solid rgba(99, 102, 241, 0.2);
     border-radius: 20px;
@@ -307,17 +373,19 @@ body {
     border: none;
 }
 
-.suggestion:hover, .example-btn:hover {
+.suggestion:hover,
+.example-btn:hover {
     background: rgba(99, 102, 241, 0.2);
     transform: translateY(-1px);
     color: #6366f1;
 }
 
 /* Enhanced Input Container */
-.input-container, .input-content {
+.input-container,
+.input-content {
     display: flex;
-    align-items: flex-end;
-    gap: 15px;
+    flex-direction: column;
+    gap: 12px;
     background: white;
     border-radius: 25px;
     padding: 15px 20px;
@@ -326,37 +394,167 @@ body {
     transition: all 0.3s ease;
 }
 
-.input-container:focus-within, .input-content:focus-within {
+.input-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    width: 100%;
+}
+
+.input-container:focus-within,
+.input-content:focus-within {
     border-color: #6366f1;
     box-shadow: 0 8px 30px rgba(99, 102, 241, 0.2);
 }
 
+/* Mobile-specific input layout */
+.model-selector-mobile {
+    display: none;
+}
+
+/* Android-optimized layout */
+@media (max-width: 768px) {
+
+    /* Input area - vertical stack layout */
+    .input-area {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px 12px;
+        max-width: 0px;
+    }
+
+    .input-actions>* {
+        margin: 0 2px;
+    }
+
+    /* Model selector at top - compact for Android */
+    .model-selector-mobile {
+        display: inline-block;
+        width: 50px !important;
+        max-width: 50px !important;
+        min-width: 50px !important;
+        order: 1;
+        /* Show first */
+        margin-bottom: 6px;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    /* Suggestions in middle */
+    .suggestions {
+        order: 2;
+        margin-bottom: 6px;
+    }
+
+    /* Input container at bottom - horizontal layout */
+    .input-container {
+        order: 3;
+        /* Show last */
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border-radius: 16px;
+        background: white;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    .input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .model-selector-mobile .model-selector {
+        width: 50px !important;
+        max-width: 50px !important;
+        min-width: 50px !important;
+        padding: 1px 2px;
+        font-size: 7px;
+        border-radius: 4px;
+        background: rgba(248, 250, 252, 0.95);
+        border: 1px solid rgba(226, 232, 240, 0.7);
+        height: 22px;
+        max-height: 22px;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3e%3cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 6px center;
+        background-size: 12px;
+        padding-right: 24px;
+    }
+
+    /* Hide desktop model selector on mobile */
+    .input-actions .model-selector {
+        display: none;
+    }
+
+    /* Make dropdown options compact */
+    .model-selector-mobile .model-selector option {
+        font-size: 7px;
+        padding: 1px 2px;
+    }
+
+    .model-selector-mobile .model-selector optgroup {
+        font-size: 6px;
+        font-weight: 600;
+    }
+}
+
 textarea#messageInput {
     flex: 1;
-    border: none;
-    outline: none;
+    border: none !important;
+    outline: none !important;
     font-size: 16px;
     resize: none;
     min-height: 24px;
     max-height: 120px;
     font-family: inherit;
     line-height: 1.5;
-    color: #334155;
-    background: transparent;
+    color: #1f2937 !important;
+    background: transparent !important;
+
+    /* Mobile optimizations */
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0;
+    box-shadow: none !important;
 }
 
 textarea#messageInput::placeholder {
-    color: #94a3b8;
+    color: #9ca3af !important;
+    opacity: 0.7;
 }
 
 /* Enhanced Input Controls */
-.input-actions, .input-controls {
+.input-actions,
+.input-controls {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.file-btn, .file-upload label {
+.file-upload {
+    display: flex;
+    /* Always visible, controlled by JavaScript */
+}
+
+.file-btn,
+.file-upload label {
     background: rgba(99, 102, 241, 0.1);
     border: none;
     border-radius: 12px;
@@ -369,14 +567,67 @@ textarea#messageInput::placeholder {
     transition: all 0.3s ease;
     color: #6366f1;
     font-size: 1.2rem;
+    position: relative;
 }
 
-.file-btn:hover, .file-upload label:hover {
+.file-btn:hover,
+.file-upload label:hover {
     background: rgba(99, 102, 241, 0.2);
     transform: translateY(-1px);
 }
 
-.model-selector, .model-selector select {
+/* GPT Vision Active State */
+.file-btn.gpt-vision-active {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    animation: visionPulse 2s ease-in-out infinite;
+}
+
+.file-btn.gpt-vision-active:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+@keyframes visionPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.6), 0 0 20px rgba(16, 185, 129, 0.2);
+    }
+}
+
+/* Vision Logo Container */
+.vision-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.vision-logo svg {
+    width: 16px;
+    height: 16px;
+    margin-bottom: 2px;
+}
+
+.vision-badge {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    line-height: 1;
+    opacity: 0.9;
+}
+
+.model-selector,
+.model-selector select {
     background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
     border: none;
     border-radius: 15px;
@@ -389,12 +640,14 @@ textarea#messageInput::placeholder {
     outline: none;
 }
 
-.model-selector:hover, .model-selector select:hover {
+.model-selector:hover,
+.model-selector select:hover {
     background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
 }
 
 /* Enhanced Send Button */
-.send-btn, button.primary {
+.send-btn,
+button.primary {
     background: linear-gradient(135deg, #6366f1, #8b5cf6);
     border: none;
     border-radius: 50%;
@@ -409,13 +662,15 @@ textarea#messageInput::placeholder {
     color: white;
 }
 
-.send-btn:hover, button.primary:hover {
+.send-btn:hover,
+button.primary:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
     background: linear-gradient(135deg, #6366f1, #8b5cf6);
 }
 
-.send-btn:active, button.primary:active {
+.send-btn:active,
+button.primary:active {
     transform: scale(0.95);
 }
 
@@ -432,6 +687,7 @@ textarea#messageInput::placeholder {
     display: block;
     margin: auto;
 }
+
 .send-btn .spinner .path {
     stroke: currentColor;
     opacity: 0.7;
@@ -469,7 +725,8 @@ textarea#messageInput::placeholder {
     margin-bottom: 0;
 }
 
-.sidebar-header h3, .settings-sidebar h3 {
+.sidebar-header h3,
+.settings-sidebar h3 {
     font-size: 20px;
     font-weight: 600;
     margin: 0;
@@ -552,7 +809,7 @@ textarea#messageInput::placeholder {
     transition: all 0.3s ease;
 }
 
-.checkbox-label input[type="checkbox"]:checked ~ .checkmark {
+.checkbox-label input[type="checkbox"]:checked~.checkmark {
     background: #6366f1;
 }
 
@@ -569,7 +826,7 @@ textarea#messageInput::placeholder {
     transform: rotate(45deg);
 }
 
-.checkbox-label input[type="checkbox"]:checked ~ .checkmark:after {
+.checkbox-label input[type="checkbox"]:checked~.checkmark:after {
     display: block;
 }
 
@@ -766,71 +1023,304 @@ body.drag-over::after {
     pointer-events: none;
 }
 
-.send-btn.loading, button.primary.loading {
+.send-btn.loading,
+button.primary.loading {
     animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Mobile Responsive Design */
 @media (max-width: 768px) {
+    body {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+    }
+
+    #app {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
     .chat-container {
-        margin: 10px;
-        height: calc(100vh - 20px);
-        border-radius: 15px;
+        margin: 0;
+        height: 100vh;
+        border-radius: 0;
+        width: 100vw;
+        max-width: none;
     }
 
-    .app-header, .header {
-        padding: 15px 20px;
+    .app-header,
+    .header {
+        padding: 12px 16px;
+        min-height: 60px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
     }
 
-    .app-header h1, .header-text h1 {
+    .header-content {
+        gap: 12px;
+    }
+
+    .bot-avatar {
+        width: 40px;
+        height: 40px;
         font-size: 20px;
     }
 
-    .app-header p, .header-text p {
-        font-size: 13px;
+    .app-header h1,
+    .header-text h1 {
+        font-size: 18px;
+        margin-bottom: 0;
     }
 
-    .messages, .chat-messages {
-        padding: 20px;
+    .app-header p,
+    .header-text p {
+        font-size: 12px;
+        display: none;
+        /* Hide subtitle on mobile to save space */
+    }
+
+    .vision-indicator {
+        margin-top: 2px;
+        padding: 2px 6px;
+    }
+
+    .vision-text {
+        font-size: 10px;
+    }
+
+    .status-indicator {
+        gap: 6px;
+    }
+
+    .status-text {
+        font-size: 12px;
+    }
+
+    .messages,
+    .chat-messages {
+        padding: 16px 12px;
+        height: calc(100vh - 180px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .message {
+        margin-bottom: 16px;
     }
 
     .message-content {
-        max-width: 85%;
+        max-width: 90%;
+        padding: 12px 16px;
+        font-size: 15px;
+        line-height: 1.5;
     }
 
-    .input-area, .chat-input-area {
-        padding: 20px;
+    .input-area,
+    .chat-input-area {
+        padding: 12px;
+        position: sticky;
+        bottom: 0;
+        background: rgba(248, 250, 252, 0.95);
+        backdrop-filter: blur(10px);
     }
 
     .suggestions {
+        gap: 6px;
+        margin-bottom: 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        flex-wrap: nowrap;
+    }
+
+    .suggestion,
+    .example-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .input-container,
+    .input-content {
+        padding: 12px 16px;
+        gap: 12px;
+    }
+
+    textarea#messageInput {
+        font-size: 16px;
+        /* Prevent zoom on iOS */
+        min-height: 20px;
+        max-height: 100px;
+    }
+
+    .input-actions,
+    .input-controls {
         gap: 8px;
     }
 
-    .suggestion, .example-btn {
-        padding: 6px 12px;
-        font-size: 13px;
+    .file-btn,
+    .file-upload label {
+        width: 40px;
+        height: 40px;
+    }
+
+    .model-selector {
+        padding: 8px 10px;
+        font-size: 11px;
+        min-width: 80px;
+    }
+
+    .send-btn,
+    button.primary {
+        width: 48px;
+        height: 48px;
     }
 
     .settings-sidebar {
         width: 100vw;
         right: -100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
     }
 
     .settings-sidebar.open {
         right: 0;
     }
 
-    .toggle-params, .settings-btn {
-        top: 1rem;
-        right: 1rem;
-        font-size: 1.2rem;
-        padding: 0.5rem;
-        position: absolute;
+    .sidebar-header {
+        padding: 16px 20px;
+        min-height: 60px;
+    }
+
+    .sidebar-content {
+        height: calc(100vh - 60px);
+        padding-bottom: 20px;
+    }
+
+    .model-params {
+        padding: 16px 20px;
+    }
+
+    .param-group {
+        margin-bottom: 20px;
+    }
+
+    .toggle-params,
+    .settings-btn {
+        position: relative;
+        top: auto;
+        right: auto;
+    }
+
+    /* Touch-friendly interactions */
+    .message-content,
+    .suggestion,
+    .file-btn,
+    .send-btn,
+    .settings-btn {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Improve scrolling performance */
+    .messages,
+    .chat-messages,
+    .sidebar-content {
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+    }
+
+    /* Hide scrollbars on mobile for cleaner look */
+    .messages::-webkit-scrollbar,
+    .chat-messages::-webkit-scrollbar,
+    .suggestions::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Keyboard handling */
+    .input-container:focus-within {
+        transform: translateY(0);
+    }
+}
+
+/* Tablet optimizations */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .chat-container {
+        margin: 20px;
+        height: calc(100vh - 40px);
+        max-width: 900px;
+    }
+
+    .messages,
+    .chat-messages {
+        padding: 24px;
+    }
+
+    .message-content {
+        max-width: 80%;
+        font-size: 16px;
+    }
+
+    .input-area,
+    .chat-input-area {
+        padding: 20px 24px;
+    }
+
+    .settings-sidebar {
+        width: 400px;
+        right: -400px;
+    }
+}
+
+/* Landscape mobile optimizations */
+@media (max-width: 768px) and (orientation: landscape) {
+
+    .app-header,
+    .header {
+        padding: 8px 16px;
+        min-height: 50px;
+    }
+
+    .bot-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+
+    .app-header h1,
+    .header-text h1 {
+        font-size: 16px;
+    }
+
+    .messages,
+    .chat-messages {
+        height: calc(100vh - 140px);
+        padding: 12px;
+    }
+
+    .input-area,
+    .chat-input-area {
+        padding: 8px 12px;
+    }
+
+    .suggestions {
+        margin-bottom: 8px;
     }
 }
 
@@ -860,6 +1350,7 @@ label:focus-visible {
 
 /* Print styles */
 @media print {
+
     .input-area,
     .chat-input-area,
     .input-container,
@@ -868,7 +1359,7 @@ label:focus-visible {
     .settings-sidebar {
         display: none;
     }
-    
+
     body {
         background: white;
     }
@@ -893,10 +1384,1319 @@ label:focus-visible {
 }
 
 .file-input-hidden {
-    display: none;
+    display: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
 }
 
 input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
+}
+
+/* Completely hide file inputs */
+input[type="file"] {
+    display: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+    display: none !important;
+}
+
+input[type="file"]::file-selector-button {
+    display: none !important;
+}
+
+/* Enhance
+d Sidebar Styles for Model Categories and Memory */
+
+.sidebar-content {
+    padding: 0;
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+.sidebar-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.3);
+    border-radius: 10px;
+}
+
+/* Memory Controls */
+.memory-controls {
+    padding: 20px;
+    border-bottom: 1px solid #e5e7eb;
+    background: rgba(248, 250, 252, 0.5);
+}
+
+.memory-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.memory-btn {
+    flex: 1;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.memory-btn:hover {
+    background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+    transform: translateY(-1px);
+}
+
+.memory-info {
+    font-size: 12px;
+    color: #6b7280;
+    text-align: center;
+}
+
+.memory-message {
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-top: 10px;
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.memory-message-success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.memory-message-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* Model Categories */
+.model-categories {
+    flex: 1;
+}
+
+.model-category {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background: rgba(248, 250, 252, 0.8);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    user-select: none;
+}
+
+.category-header:hover {
+    background: rgba(241, 245, 249, 0.9);
+}
+
+.category-header.collapsed {
+    background: rgba(248, 250, 252, 0.5);
+}
+
+.category-icon {
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.category-title {
+    flex: 1;
+    font-weight: 600;
+    color: #374151;
+    font-size: 14px;
+}
+
+.category-toggle {
+    font-size: 12px;
+    color: #6b7280;
+    transition: transform 0.3s ease;
+}
+
+.category-header.collapsed .category-toggle {
+    transform: rotate(-90deg);
+}
+
+/* Model Items */
+.category-content {
+    background: white;
+}
+
+.model-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.model-item:hover {
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.model-item.selected {
+    background: rgba(99, 102, 241, 0.1);
+    border-left: 3px solid #6366f1;
+}
+
+.model-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.model-name {
+    font-weight: 600;
+    color: #374151;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.model-provider {
+    font-size: 11px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.model-description {
+    font-size: 11px;
+    color: #6b7280;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.model-actions {
+    display: flex;
+    gap: 6px;
+    margin-left: 10px;
+}
+
+.model-select-btn,
+.model-info-btn {
+    padding: 4px 8px;
+    font-size: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.model-select-btn {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+}
+
+.model-select-btn:hover {
+    background: linear-gradient(135deg, #5b21b6, #7c3aed);
+    transform: translateY(-1px);
+}
+
+.model-info-btn {
+    background: rgba(107, 114, 128, 0.1);
+    color: #6b7280;
+    border: 1px solid rgba(107, 114, 128, 0.2);
+}
+
+.model-info-btn:hover {
+    background: rgba(107, 114, 128, 0.2);
+    color: #374151;
+}
+
+/* Model Info Popup */
+.model-info-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    z-index: 10000;
+    max-width: 400px;
+    width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: popupFadeIn 0.3s ease-out;
+}
+
+@keyframes popupFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.model-info-popup::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+.model-info-header {
+    padding: 20px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.model-info-header h3 {
+    color: #374151;
+    font-size: 18px;
+    margin: 0;
+}
+
+.model-info-content {
+    padding: 20px;
+}
+
+.model-info-content p {
+    margin-bottom: 15px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.capabilities {
+    background: rgba(248, 250, 252, 0.8);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.capabilities h4 {
+    color: #374151;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.capabilities ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+}
+
+.capabilities li {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.model-info-actions {
+    padding: 20px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.close-info-btn,
+.select-model-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-info-btn {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.close-info-btn:hover {
+    background: #e5e7eb;
+}
+
+.select-model-btn {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+}
+
+.select-model-btn:hover {
+    background: linear-gradient(135deg, #5b21b6, #7c3aed);
+}
+
+/* Model Selection Feedback */
+.model-selection-feedback {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: rgba(16, 185, 129, 0.95);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    animation: feedbackSlideIn 0.3s ease-out;
+    z-index: 100;
+}
+
+@keyframes feedbackSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.feedback-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.feedback-icon {
+    font-size: 16px;
+}
+
+.feedback-text {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Enhanced Parameter Labels */
+.param-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 12px;
+}
+
+/* Mobile Responsive for Sidebar */
+@media (max-width: 768px) {
+    .settings-sidebar {
+        width: 100vw;
+        right: -100vw;
+    }
+
+    .model-item {
+        padding: 10px 15px;
+    }
+
+    .model-name {
+        font-size: 12px;
+    }
+
+    .model-description {
+        font-size: 10px;
+    }
+
+    .model-actions {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .model-select-btn,
+    .model-info-btn {
+        font-size: 9px;
+        padding: 3px 6px;
+    }
+
+    .memory-controls {
+        padding: 15px;
+    }
+
+    .memory-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .category-header {
+        padding: 12px 15px;
+    }
+
+    .model-info-popup {
+        width: 95vw;
+        max-height: 90vh;
+    }
+}
+
+/* Typing Indicator Enhancement */
+.typing-indicator {
+    display: none;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+}
+
+.typing-indicator.show {
+    display: block;
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.typing-dots {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    border-radius: 20px;
+    border-bottom-left-radius: 6px;
+    max-width: fit-content;
+}
+
+.typing-dot {
+    width: 8px;
+    height: 8px;
+    background: #94a3b8;
+    border-radius: 50%;
+    animation: typingPulse 1.4s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typingPulse {
+
+    0%,
+    60%,
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    30% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+/* Additional Mobile Optimizations */
+
+/* Prevent text selection on UI elements */
+.header,
+.input-actions,
+.suggestions,
+.settings-sidebar {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Allow text selection in messages and input */
+.message-content,
+textarea#messageInput {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+/* Improve button touch targets */
+@media (max-width: 768px) {
+
+    button,
+    .suggestion,
+    .file-btn,
+    .send-btn,
+    .settings-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Better spacing for touch */
+    .input-actions>* {
+        margin: 0 2px;
+    }
+
+    /* Prevent accidental zooming */
+    input,
+    textarea,
+    select {
+        font-size: 16px !important;
+    }
+
+    /* Smooth momentum scrolling */
+    .messages,
+    .chat-messages,
+    .sidebar-content {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+
+    /* Hide address bar on scroll */
+    body {
+        overflow-x: hidden;
+    }
+
+    /* Better focus states for accessibility */
+    button:focus,
+    input:focus,
+    textarea:focus,
+    select:focus {
+        outline: 2px solid #6366f1;
+        outline-offset: 2px;
+    }
+
+    /* Improve image display on mobile */
+    .message-image,
+    .generated-image-container img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    /* Better loading states */
+    .send-btn.loading {
+        pointer-events: none;
+    }
+
+    /* Optimize animations for mobile */
+    @media (prefers-reduced-motion: reduce) {
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+/* PWA-like experience */
+@media (display-mode: standalone) {
+    body {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+}
+
+/* Dark mode mobile optimizations */
+@media (max-width: 768px) and (prefers-color-scheme: dark) {
+    .chat-container {
+        background: rgba(30, 41, 59, 0.95);
+    }
+
+    .input-container {
+        background: #1e293b;
+        border-color: #475569;
+    }
+
+    textarea#messageInput {
+        color: #f1f5f9;
+    }
+
+    textarea#messageInput::placeholder {
+        color: #64748b;
+    }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+
+    .bot-avatar,
+    .file-btn,
+    .send-btn {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Orientation change handling */
+@media (max-width: 768px) {
+    @media (orientation: portrait) {
+        .suggestions {
+            flex-wrap: wrap;
+        }
+    }
+
+    @media (orientation: landscape) {
+        .suggestions {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+        }
+
+        .header-text p {
+            display: none;
+        }
+    }
+}
+
+/*
+ Mobile Input Box Enhancements */
+@media (max-width: 768px) {
+
+    /* Improved textarea for mobile */
+    textarea#messageInput {
+        font-size: 16px !important;
+        /* Prevent zoom on iOS */
+        line-height: 1.4;
+        padding: 4px 0;
+        border-radius: 0;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        resize: none;
+        overflow-y: hidden;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        color: #1f2937 !important;
+        /* Ensure text is visible */
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+    }
+
+    /* Better placeholder styling */
+    textarea#messageInput::placeholder {
+        color: #9ca3af !important;
+        font-size: 15px;
+        opacity: 0.7;
+    }
+
+    /* Input focus improvements */
+    textarea#messageInput:focus {
+        outline: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: #1f2937 !important;
+        background: transparent !important;
+    }
+
+    /* Improved input actions layout */
+    .input-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    /* Better file button for mobile */
+    .file-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(99, 102, 241, 0.1);
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .file-btn:active {
+        transform: scale(0.95);
+        background: rgba(99, 102, 241, 0.2);
+    }
+
+    /* Enhanced send button for mobile */
+    .send-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .send-btn:active {
+        transform: scale(0.95);
+    }
+
+    .send-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    /* Input container improvements */
+    .input-container {
+        position: relative;
+        background: rgba(255, 255, 255, 0.98) !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .input-container:focus-within {
+        border-color: rgba(99, 102, 241, 0.5);
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+    }
+
+    /* Suggestions improvements for mobile */
+    .suggestions {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding: 0 2px 8px 2px;
+        margin-bottom: 12px;
+    }
+
+    .suggestions::-webkit-scrollbar {
+        display: none;
+    }
+
+    .suggestion {
+        flex-shrink: 0;
+        padding: 8px 14px;
+        background: rgba(99, 102, 241, 0.08);
+        border: 1px solid rgba(99, 102, 241, 0.15);
+        border-radius: 16px;
+        font-size: 13px;
+        color: #6366f1;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .suggestion:active {
+        transform: scale(0.95);
+        background: rgba(99, 102, 241, 0.15);
+    }
+
+    /* Input area positioning */
+    .input-area {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        background: rgba(248, 250, 252, 0.95);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-top: 1px solid rgba(226, 232, 240, 0.6);
+        padding: 12px;
+        margin: 0;
+    }
+
+    /* Safe area handling for devices with notches */
+    .input-area {
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+    }
+
+    /* Keyboard handling improvements */
+    .input-container.keyboard-open {
+        position: fixed;
+        bottom: 0;
+        left: 12px;
+        right: 12px;
+        z-index: 1000;
+    }
+
+    /* Loading state for send button */
+    .send-btn.loading {
+        pointer-events: none;
+    }
+
+    .send-btn.loading svg {
+        animation: spin 1s linear infinite;
+    }
+
+    /* Better touch targets */
+    .file-btn,
+    .send-btn,
+    .suggestion,
+    .model-selector {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Improved model selector for mobile */
+    .model-selector-mobile .model-selector {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 12px;
+        padding-right: 28px;
+        cursor: pointer;
+        font-weight: 500;
+        color: #374151;
+        line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Focus states for accessibility */
+    .file-btn:focus,
+    .send-btn:focus,
+    .suggestion:focus,
+    .model-selector:focus,
+    textarea#messageInput:focus {
+        outline: 2px solid rgba(99, 102, 241, 0.5);
+        outline-offset: 2px;
+    }
+}
+
+/* Landscape mobile adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+    .input-area {
+        padding: 8px 12px;
+    }
+
+    .input-container {
+        padding: 10px 14px;
+    }
+
+    .suggestions {
+        margin-bottom: 8px;
+    }
+
+    .suggestion {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .input-container {
+        border: 2px solid #000;
+    }
+
+    .send-btn {
+        border: 2px solid #000;
+    }
+
+    .file-btn {
+        border: 1px solid #000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+
+    .input-container,
+    .send-btn,
+    .file-btn,
+    .suggestion {
+        transition: none;
+    }
+
+    .send-btn.loading svg {
+        animation: none;
+    }
+}
+
+/* Compa
+ct Model Selector for Mobile */
+@media (max-width: 768px) {
+
+    /* Make the model selector more compact */
+    .model-selector-mobile {
+        position: relative;
+    }
+
+    .model-selector-mobile .model-selector {
+        /* Compact sizing */
+        min-height: 24px;
+        height: 24px;
+        padding: 3px 18px 3px 6px;
+        font-size: 9px;
+        line-height: 1.1;
+
+        /* Better visual styling */
+        background: rgba(241, 245, 249, 0.95);
+        border: 1px solid rgba(203, 213, 225, 0.8);
+        border-radius: 4px;
+
+        /* Improved dropdown arrow */
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3e%3cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3e%3c/svg%3e");
+        background-size: 10px;
+        background-position: right 3px center;
+        padding-right: 18px;
+
+        /* Text styling */
+        color: #4b5563;
+        font-weight: 500;
+
+        /* Remove default styling */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+
+        /* Smooth transitions */
+        transition: all 0.2s ease;
+    }
+
+    .model-selector-mobile .model-selector:focus {
+        outline: none;
+        border-color: rgba(99, 102, 241, 0.6);
+        background: rgba(255, 255, 255, 0.98);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+    }
+
+    /* Compact option styling */
+    .model-selector-mobile .model-selector option {
+        padding: 4px 8px;
+        font-size: 12px;
+        background: white;
+        color: #374151;
+    }
+
+    .model-selector-mobile .model-selector optgroup {
+        font-size: 10px;
+        font-weight: 600;
+        color: #6b7280;
+        background: #f9fafb;
+        padding: 2px 8px;
+    }
+
+    /* Reduce overall input container size */
+    .input-container {
+        padding: 8px 12px;
+        gap: 6px;
+    }
+
+    /* Adjust input wrapper */
+    .input-wrapper {
+        gap: 8px;
+    }
+
+    /* Make textarea more compact */
+    textarea#messageInput {
+        min-height: 20px;
+        line-height: 1.3;
+        padding: 4px 0;
+        color: #1f2937 !important;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+    }
+
+    /* Compact buttons */
+    .file-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+    }
+
+    .send-btn {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Extra small screens (phones in portrait) */
+@media (max-width: 480px) {
+    .model-selector-mobile .model-selector {
+        font-size: 8px;
+        height: 22px;
+        min-height: 22px;
+        padding: 2px 16px 2px 4px;
+        background-size: 10px;
+        background-position: right 2px center;
+        padding-right: 16px;
+    }
+
+    .input-container {
+        padding: 6px 10px;
+    }
+
+    .file-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    .send-btn {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+/* Critical Text Visibility Fix for Mobile */
+@media (max-width: 768px) {
+
+    /* Force text visibility in all states */
+    textarea#messageInput,
+    textarea#messageInput:focus,
+    textarea#messageInput:active,
+    textarea#messageInput:hover {
+        color: #1f2937 !important;
+        background-color: transparent !important;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        -webkit-text-fill-color: #1f2937 !important;
+        -webkit-opacity: 1 !important;
+        opacity: 1 !important;
+    }
+
+    /* Ensure placeholder is visible but distinct */
+    textarea#messageInput::placeholder,
+    textarea#messageInput::-webkit-input-placeholder,
+    textarea#messageInput::-moz-placeholder,
+    textarea#messageInput:-ms-input-placeholder {
+        color: #9ca3af !important;
+        opacity: 0.7 !important;
+        -webkit-text-fill-color: #9ca3af !important;
+    }
+
+    /* Input wrapper background for better contrast */
+    .input-wrapper {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        padding: 8px 12px;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Ensure input container has solid background */
+    .input-container {
+        background: rgba(255, 255, 255, 0.98) !important;
+        border: 1px solid rgba(226, 232, 240, 0.9) !important;
+    }
+
+    /* Fix for dark mode if applicable */
+    @media (prefers-color-scheme: dark) {
+
+        textarea#messageInput,
+        textarea#messageInput:focus,
+        textarea#messageInput:active,
+        textarea#messageInput:hover {
+            color: #f9fafb !important;
+            -webkit-text-fill-color: #f9fafb !important;
+        }
+
+        .input-wrapper {
+            background: rgba(31, 41, 55, 0.95);
+        }
+
+        .input-container {
+            background: rgba(31, 41, 55, 0.98) !important;
+            border: 1px solid rgba(75, 85, 99, 0.9) !important;
+        }
+    }
+}
+
+/* Extra specificity for stubborn browsers */
+@media (max-width: 768px) {
+    .input-container textarea#messageInput {
+        color: #1f2937 !important;
+        background: none !important;
+        background-color: transparent !important;
+        -webkit-text-fill-color: #1f2937 !important;
+    }
+
+    .input-wrapper textarea#messageInput {
+        color: #1f2937 !important;
+        background: transparent !important;
+        -webkit-text-fill-color: #1f2937 !important;
+    }
+}
+
+/*
+ Better Mobile Layout - Prioritize Text Input */
+@media (max-width: 768px) {
+
+    /* Ensure input container uses flexbox properly */
+    .input-container {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 6px 10px;
+    }
+
+    /* Input wrapper should take most space */
+    .input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-height: 36px;
+    }
+
+    /* Textarea should expand to fill available space */
+    textarea#messageInput {
+        flex: 1;
+        min-width: 0;
+        /* Allow shrinking */
+        width: 100%;
+    }
+
+    /* Model selector should be small and not interfere */
+    .model-selector-mobile {
+        width: auto;
+        max-width: 80px;
+        min-width: 60px;
+        flex-shrink: 0;
+        align-self: flex-start;
+    }
+
+    /* Compact buttons */
+    .file-btn,
+    .send-btn {
+        flex-shrink: 0;
+    }
+}
+
+/* Ultra compact for very small screens */
+@media (max-width: 360px) {
+    .model-selector-mobile {
+        max-width: 70px;
+        min-width: 50px;
+    }
+
+    .model-selector-mobile .model-selector {
+        font-size: 7px;
+        height: 20px;
+        min-height: 20px;
+        padding: 1px 14px 1px 3px;
+        background-size: 8px;
+        padding-right: 14px;
+    }
+}
+
+/*
+ Android-Specific Optimizations */
+@media (max-width: 768px) {
+
+    /* Ensure proper stacking order */
+    .input-area>* {
+        z-index: 1;
+    }
+
+    /* Model selector styling for Android */
+    .model-selector-mobile {
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 8px;
+        padding: 4px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Text input area styling */
+    .input-container {
+        background: rgba(255, 255, 255, 0.98) !important;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    /* Ensure textarea gets full width */
+    textarea#messageInput {
+        flex: 1;
+        min-width: 0;
+        width: 100%;
+        color: #1f2937 !important;
+        background: transparent !important;
+    }
+
+    /* Compact action buttons */
+    .input-actions {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .file-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+    }
+
+    .send-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+}
+
+/* Android Chrome specific fixes */
+@supports (-webkit-touch-callout: none) {
+    @media (max-width: 768px) {
+
+        /* Fix for Android Chrome input issues */
+        textarea#messageInput {
+            -webkit-user-select: text;
+            user-select: text;
+            -webkit-touch-callout: default;
+        }
+
+        /* Prevent zoom on input focus */
+        textarea#messageInput,
+        select {
+            font-size: 16px !important;
+        }
+
+        /* Better touch targets for Android */
+        .model-selector-mobile .model-selector {
+            min-height: 44px;
+            height: 44px;
+            padding: 12px 36px 12px 12px;
+            font-size: 14px;
+        }
+    }
 }

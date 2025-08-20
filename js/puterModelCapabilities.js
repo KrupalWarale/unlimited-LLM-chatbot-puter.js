@@ -67,13 +67,13 @@ class PuterModelCapabilities {
                     images: false,
                     vision: false,
                     streaming: false,
-                    testMode: true
+                    imageGeneration: true
                 },
                 service: 'puter.ai.txt2img',
                 parameters: {
                     model: 'dall-e-3'
                 },
-                description: 'Advanced image generation from text descriptions'
+                description: 'Professional image generation from text descriptions'
             },
             'gpt-4o-mini': {
                 name: 'GPT-4o Mini',
@@ -332,7 +332,7 @@ class PuterModelCapabilities {
                     images: true,
                     vision: true,
                     streaming: true,
-                    testMode: true
+                    testMode: false
                 },
                 service: 'puter.ai.chat',
                 parameters: {
@@ -588,7 +588,7 @@ class PuterModelCapabilities {
                     images: false,
                     vision: false,
                     streaming: true,
-                    testMode: true
+                    testMode: false
                 },
                 service: 'puter.ai.chat',
                 parameters: {

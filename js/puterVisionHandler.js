@@ -1,319 +1,112 @@
 /**
- * Puter Vision Handler
- * Alternative implementation for handling image analysis
+ * Puter Vision Handler - Simplified Version
+ * Handles image analysis using the simple puter.ai.chat approach
  */
 
 class PuterVisionHandler {
     constructor() {
-        
+        this.maxImageSize = 1024 * 1024; // 1MB limit for data URLs
     }
 
     /**
      * Main entry point for vision analysis
      */
-    async analyzeImage(prompt, imageData, modelName = 'gpt-4o') {
-        if (true) { // Changed this.debug to true for debugging
-            console.log('🔍 Vision Handler Starting...');
-            console.log('Prompt:', prompt);
-            console.log('Model:', modelName);
-            console.log('Image data type:', typeof imageData);
-            if (imageData instanceof File) {
-                console.log('Image Data (File):', imageData.name, imageData.size, imageData.type);
-            } else if (imageData instanceof Blob) {
-                console.log('Image Data (Blob):', imageData.size, imageData.type);
-            } else if (typeof imageData === 'string' && imageData.length < 200) { // Limit log for long base64 strings
-                console.log('Image Data (String/URL):', imageData);
-            } else if (typeof imageData === 'object' && imageData !== null && imageData.url) {
-                console.log('Image Data (Object with URL):', imageData.url);
-            }
-        }
-
-        // Try multiple approaches in order of likelihood to work
-        const approaches = [
-            this.useImg2Txt.bind(this),
-            this.useChatWithImage.bind(this),
-            this.useMultimodal.bind(this),
-            this.useAlternativeFormat.bind(this)
-        ];
-
-        for (let i = 0; i < approaches.length; i++) {
-            try {
-                if (true) console.log(`🔄 Trying approach ${i + 1} (${approaches[i].name})...`); // Debug log
-                const result = await approaches[i](prompt, imageData, modelName);
-                
-                if (result && this.isValidResponse(result)) {
-                    if (true) console.log(`✅ Approach ${i + 1} (${approaches[i].name}) succeeded!`); // Debug log
-                    return this.formatResponse(result);
-                }
-            } catch (error) {
-                if (true) console.log(`❌ Approach ${i + 1} (${approaches[i].name}) failed:`, error.message);
-            }
-        }
-
-        // If all approaches fail, return a fallback response
-        return this.getFallbackResponse();
-    }
-
-    /**
-     * Resolves various image data formats into a URL or puter_path.
-     * If the image is a local file (Blob/File/Data URL), it uploads it to Puter FS.
-     */
-    async resolveImageUrl(imageData) {
-        if (true) console.log('resolveImageUrl: Input imageData:', typeof imageData, imageData instanceof File ? imageData.name : (imageData instanceof Blob ? imageData.type : (typeof imageData === 'string' && imageData.length < 200 ? imageData : '...'))); // Debug log
-        try {
-            if (typeof imageData === 'string' && (imageData.startsWith('http://') || imageData.startsWith('https://'))) {
-                // Already an external URL
-                if (true) console.log('resolveImageUrl: Detected external URL.'); // Debug log
-                return { type: 'url', value: imageData };
-            }
-
-            let fileToUpload;
-            let originalFileName = `temp_image_${Date.now()}`;
-            let fileExtension = 'png'; // Default extension
-
-            if (imageData instanceof File) {
-                fileToUpload = imageData;
-                originalFileName = imageData.name;
-                const parts = originalFileName.split('.');
-                if (parts.length > 1) {
-                    fileExtension = parts.pop();
-                }
-                if (true) console.log('resolveImageUrl: Handling File instance.'); // Debug log
-            } else if (imageData instanceof Blob) {
-                fileToUpload = new File([imageData], `${originalFileName}.${fileExtension}`, { type: imageData.type });
-                if (true) console.log('resolveImageUrl: Handling Blob instance.'); // Debug log
-            } else if (typeof imageData === 'string' && imageData.startsWith('data:')) {
-                // Convert data URL to Blob
-                const arr = imageData.split(',');
-                const mime = arr[0].match(/:(.*?);/)[1];
-                const bstr = atob(arr[1]);
-                let n = bstr.length;
-                const u8arr = new Uint8Array(n);
-                while (n--) {
-                    u8arr[n] = bstr.charCodeAt(n);
-                }
-                fileToUpload = new File([new Blob([u8arr], { type: mime })], `${originalFileName}.${mime.split('/')[1]}`, { type: mime });
-                fileExtension = mime.split('/')[1];
-                if (true) console.log('resolveImageUrl: Handling Data URL string.'); // Debug log
-            } else if (imageData.url) {
-                // If it's an object with a URL property, try to resolve that URL
-                if (true) console.log('resolveImageUrl: Handling object with URL property.'); // Debug log
-                return this.resolveImageUrl(imageData.url);
-            } else {
-                throw new Error('Unsupported image data format for resolution.');
-            }
-
-            const puterFile = await puter.fs.write(`${originalFileName}.${fileExtension}`, fileToUpload, { override: true });
-            if (true) console.log('resolveImageUrl: Uploaded to Puter FS, path:', puterFile.path); // Debug log
-            return { type: 'puter_path', value: puterFile.path };
-        } catch (error) {
-            console.error('resolveImageUrl Error:', error);
-            throw error; // Re-throw to propagate the error
-        }
-    }
-
-    /**
-     * Approach 1: Use img2txt method
-     */
-    async useImg2Txt(prompt, imageData, modelName) {
-        if (!puter.ai.img2txt) {
-            throw new Error('img2txt not available');
-        }
-
-        // Convert image data to appropriate format
-        const imageInput = await this.prepareImageForImg2Txt(imageData);
+    async analyzeImage(prompt, imageData, modelName = 'gpt-4') {
+        console.log('🔍 Vision Handler Starting...');
+        console.log('Prompt:', prompt);
+        console.log('Model:', modelName);
         
-        // img2txt might not accept a custom prompt, so we'll try both ways
         try {
-            // Try with prompt
-            const result = await puter.ai.img2txt(imageInput, prompt);
-            return result;
-        } catch (e) {
-            // Try without prompt (just image description)
-            const description = await puter.ai.img2txt(imageInput);
+            // Use the simple approach that works
+            const result = await this.useChatWithImage(prompt, imageData, modelName);
             
-            // Now use regular chat to answer the specific question
-            if (description) {
-                const enhancedPrompt = `Based on this image description: "${description}"\n\nQuestion: ${prompt}`;
-                const chatResponse = await puter.ai.chat(enhancedPrompt, { model: modelName });
-                return chatResponse;
+            if (result && this.isValidResponse(result)) {
+                console.log('✅ Vision analysis succeeded!');
+                return this.formatResponse(result);
+            } else {
+                throw new Error('Invalid response from vision API');
             }
-            throw new Error('img2txt failed');
+        } catch (error) {
+            console.log('❌ Vision analysis failed:', error.message);
+            return this.getFallbackResponse();
         }
     }
 
     /**
-     * Approach 2: Use chat with image as parameter
+     * Simple chat with image approach
      */
     async useChatWithImage(prompt, imageData, modelName) {
-        const resolvedImage = await this.resolveImageUrl(imageData);
-        let result;
-
-        if (true) console.log('useChatWithImage: Resolved image:', resolvedImage); // Debug log
-
-        if (resolvedImage.type === 'url') {
-            result = await puter.ai.chat(prompt, resolvedImage.value, { model: modelName });
-        } else if (resolvedImage.type === 'puter_path') {
-            // For chat with image parameter, it expects a URL.
-            // If it's a puter_path, we need to treat it as a file for multimodal.
-            // This approach is more for direct image URLs, so we'll route to multimodal if it's a puter_path.
-            return this.useMultimodal(prompt, imageData, modelName);
-        } else {
-            throw new Error('Could not resolve image for chat with image parameter.');
-        }
+        console.log('🔧 Using simple puter.ai.chat approach');
         
-        return result;
-    }
-
-    /**
-     * Approach 3: Use multimodal format
-     */
-    async useMultimodal(prompt, imageData, modelName) {
-        let temporaryFilePath = null;
         try {
-            const resolvedImage = await this.resolveImageUrl(imageData);
-
-            if (true) console.log('useMultimodal: Resolved image:', resolvedImage); // Debug log
-
-            const contentArray = [{ type: 'text', text: prompt }];
-
-            if (resolvedImage.type === 'url') {
-                contentArray.push({
-                    type: 'image_url',
-                    image_url: { url: resolvedImage.value }
-                });
-            } else if (resolvedImage.type === 'puter_path') {
-                contentArray.push({
-                    type: 'file',
-                    puter_path: resolvedImage.value
-                });
-                temporaryFilePath = resolvedImage.value;
+            // Get the data URL from the image data
+            let imageUrl;
+            
+            if (imageData.url && imageData.url.startsWith('data:')) {
+                imageUrl = imageData.url;
+            } else if (typeof imageData === 'string' && imageData.startsWith('data:')) {
+                imageUrl = imageData;
             } else {
-                throw new Error('Unsupported image data format for multimodal.');
+                throw new Error('No data URL available');
             }
             
-            const messages = [{ role: 'user', content: contentArray }];
-
-            const result = await puter.ai.chat(messages, { model: modelName });
-            return result;
-        } finally {
-            if (temporaryFilePath) {
-                await puter.fs.delete(temporaryFilePath).catch(e => console.error("Error deleting temp file:", e));
+            // Check if image is too large and compress if needed
+            if (imageUrl.length > this.maxImageSize) {
+                console.log('🔧 Image too large, compressing...');
+                imageUrl = await this.compressImage(imageUrl);
             }
+            
+            console.log('🔧 Image size:', Math.round(imageUrl.length / 1024), 'KB');
+            
+            // Use the simple approach: puter.ai.chat(prompt, imageUrl)
+            const result = await puter.ai.chat(prompt, imageUrl);
+            console.log('🔧 Vision result received');
+            
+            return result;
+        } catch (error) {
+            console.log('🔧 Vision failed:', error);
+            throw error;
         }
     }
 
     /**
-     * Approach 4: Alternative format attempts
+     * Compress image if it's too large
      */
-    async useAlternativeFormat(prompt, imageData, modelName) {
-        // This approach seems to be trying to embed base64 directly into a non-standard message format.
-        // Based on the Puter.js documentation, the 'multimodal' approach with 'type: "file"' or 'type: "image_url"'
-        // in the messages array is the correct way to handle images for chat.
-        // This method might not be necessary or effective with the official API.
-        // For now, let's keep it but note its potential redundancy.
-
-        const resolvedImage = await this.resolveImageUrl(imageData);
-        
-        if (true) console.log('useAlternativeFormat: Resolved image:', resolvedImage); // Debug log
-
-        if (resolvedImage.type === 'url' && resolvedImage.value.startsWith('data:')) {
-            // If it's a data URL, try to extract the base64 part for this specific attempt
-            const base64Data = resolvedImage.value;
-            const base64Only = base64Data.split(',')[1];
-            const mimeMatch = base64Data.match(/:(.*?);/);
-            const mediaType = mimeMatch ? mimeMatch[1] : 'image/jpeg'; // Default if not found
-            
-            const messageWithImage = {
-                content: prompt,
-                images: [{
-                    type: 'base64',
-                    data: base64Only,
-                    media_type: mediaType
-                }]
+    async compressImage(dataUrl) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Calculate new dimensions (max 1024px on longest side)
+                const maxSize = 1024;
+                let { width, height } = img;
+                
+                if (width > height) {
+                    if (width > maxSize) {
+                        height = (height * maxSize) / width;
+                        width = maxSize;
+                    }
+                } else {
+                    if (height > maxSize) {
+                        width = (width * maxSize) / height;
+                        height = maxSize;
+                    }
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                // Draw and compress
+                ctx.drawImage(img, 0, 0, width, height);
+                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                
+                console.log('🔧 Compressed from', Math.round(dataUrl.length / 1024), 'KB to', Math.round(compressedDataUrl.length / 1024), 'KB');
+                resolve(compressedDataUrl);
             };
-            const result = await puter.ai.chat(messageWithImage, { model: modelName });
-            return result;
-        } else if (resolvedImage.type === 'puter_path') {
-             // If it's a puter_path, use the standard multimodal approach as a fallback for this alternative format.
-             // This might not be the intent of 'alternative format' but ensures image is processed.
-             return this.useMultimodal(prompt, imageData, modelName);
-        } else {
-            // For external URLs or other unhandled types, throw an error or handle appropriately
-            throw new Error('Alternative format not suitable for external URLs or other image types.');
-        }
-    }
-
-    /**
-     * Prepare image for img2txt
-     */
-    async prepareImageForImg2Txt(imageData) {
-        const resolvedImage = await this.resolveImageUrl(imageData);
-        if (resolvedImage.type === 'url' || resolvedImage.type === 'puter_path') {
-            if (true) console.log('prepareImageForImg2Txt: Using resolved image value:', resolvedImage.value); // Debug log
-            return resolvedImage.value;
-        }
-        throw new Error('Cannot prepare image for img2txt from unknown format after resolution.');
-    }
-
-    /**
-     * Convert various formats to Blob
-     * (This method might become redundant with resolveImageUrl)
-     */
-    async convertToBlob(imageData) {
-        console.warn('convertToBlob is deprecated. Use resolveImageUrl instead.'); // Deprecation warning
-        if (imageData instanceof Blob) {
-            return imageData;
-        }
-        
-        if (imageData instanceof File) {
-            return imageData;
-        }
-        
-        if (typeof imageData === 'string' && imageData.startsWith('data:')) {
-            // Convert data URL to blob
-            const arr = imageData.split(',');
-            const mime = arr[0].match(/:(.*?);/)[1];
-            const bstr = atob(arr[1]);
-            let n = bstr.length;
-            const u8arr = new Uint8Array(n);
-            while (n--) {
-                u8arr[n] = bstr.charCodeAt(n);
-            }
-            return new Blob([u8arr], { type: mime });
-        }
-        
-        if (imageData.url) {
-            return await this.convertToBlob(imageData.url);
-        }
-        
-        throw new Error('Cannot convert to blob');
-    }
-
-    /**
-     * Convert various formats to base64 data URL
-     * (This method might become redundant with resolveImageUrl)
-     */
-    async convertToBase64(imageData) {
-        console.warn('convertToBase64 is deprecated. Use resolveImageUrl instead.'); // Deprecation warning
-        if (typeof imageData === 'string' && imageData.startsWith('data:')) {
-            return imageData;
-        }
-        
-        if (imageData.url && imageData.url.startsWith('data:')) {
-            return imageData.url;
-        }
-        
-        if (imageData instanceof File || imageData instanceof Blob) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(imageData);
-            });
-        }
-        
-        throw new Error('Cannot convert to base64');
+            img.src = dataUrl;
+        });
     }
 
     /**
@@ -324,11 +117,27 @@ class PuterVisionHandler {
         
         // Check for various response formats
         if (typeof response === 'string' && response.length > 0) {
-            // Check if it's not an error message
+            // Check if it's not an error message or incomplete response
             const lowerResponse = response.toLowerCase();
-            return !lowerResponse.includes("i don't see") && 
-                   !lowerResponse.includes("no image") &&
-                   !lowerResponse.includes("cannot see");
+            const invalidPatterns = [
+                "i don't see",
+                "no image",
+                "cannot see",
+                "tfiles>opencancel", // Common UI artifact
+                "files>open",
+                "cancel",
+                "open"
+            ];
+            
+            // Check if response is too short or contains only UI artifacts
+            if (response.length < 10) return false;
+            
+            // Check for invalid patterns
+            for (const pattern of invalidPatterns) {
+                if (lowerResponse.includes(pattern)) return false;
+            }
+            
+            return true;
         }
         
         if (response.message?.content) {
@@ -354,13 +163,16 @@ class PuterVisionHandler {
      * Format response to standard format
      */
     formatResponse(response) {
+        console.log('🔧 Vision Handler formatResponse - Input:', response);
+        console.log('🔧 Vision Handler formatResponse - Type:', typeof response);
+        
         if (typeof response === 'string') {
+            console.log('🔧 Vision Handler formatResponse - Returning string:', response);
             return response;
         }
         
         if (response?.message?.tool_calls?.length > 0) {
             // Handle tool calls, e.g., if AI suggests a function to call
-            // You might want to process these tool calls here or pass them up
             return `AI wants to call a tool: ${JSON.stringify(response.message.tool_calls)}`;
         }
 
@@ -391,16 +203,18 @@ class PuterVisionHandler {
      * Get fallback response when all methods fail
      */
     getFallbackResponse() {
-        return `I apologize, but I'm having trouble analyzing the image at the moment. This could be due to:
+        return `I apologize, but I'm having trouble analyzing the image properly. The vision service returned incomplete or invalid data.
 
-1. The image format may not be supported
-2. The image may be too large or complex
-3. There might be a temporary issue with the vision service
+This could be due to:
+1. The image containing mostly UI elements or text that's hard to interpret
+2. The image format or quality affecting analysis
+3. A temporary issue with the vision service
 
 Please try:
+- Using a clearer image with distinct objects or scenes
+- Ensuring the image is well-lit and in focus
 - Using a different image format (JPG, PNG)
-- Reducing the image size
-- Trying again in a moment
+- Asking a more specific question about the image
 
 If the issue persists, you can still ask me text-based questions!`;
     }

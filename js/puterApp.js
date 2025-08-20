@@ -315,6 +315,33 @@ class PuterApp {
             throw new Error('Authentication required to use Puter AI services');
         }
         
+        // Initialize Model Configuration
+        if (window.PuterModelConfig) {
+            this.modelConfig = new PuterModelConfig();
+            console.log('✅ Model Configuration initialized');
+            console.log('Available models:', this.modelConfig.getAllModels().length);
+        } else {
+            throw new Error('Model Configuration not available');
+        }
+
+        // Initialize Chat Memory
+        if (window.PuterChatMemory) {
+            this.chatMemory = new PuterChatMemory();
+            this.chatMemory.initializeUI();
+            console.log('✅ Chat Memory initialized');
+        } else {
+            throw new Error('Chat Memory not available');
+        }
+
+        // Initialize Sidebar Manager
+        if (window.PuterSidebarManager) {
+            this.sidebarManager = new PuterSidebarManager(this.modelConfig, this.chatMemory);
+            window.puterSidebar = this.sidebarManager; // Make globally available
+            console.log('✅ Sidebar Manager initialized');
+        } else {
+            throw new Error('Sidebar Manager not available');
+        }
+        
         // Initialize UI Manager
         if (window.puterUIManager) {
             puterUIManager.init();
@@ -326,16 +353,30 @@ class PuterApp {
         // Initialize Model Capabilities
         if (window.puterModelCapabilities) {
             console.log('✅ Model Capabilities loaded');
-            console.log('Available models:', Object.keys(puterModelCapabilities.getAllModels()));
         } else {
             throw new Error('Model Capabilities not available');
         }
 
-        // Initialize Chat Manager
+        // Initialize Chat Manager with memory support
         if (window.puterChatManager) {
+            // Pass memory instance to chat manager if it supports it
+            if (typeof puterChatManager.setMemory === 'function') {
+                puterChatManager.setMemory(this.chatMemory);
+            }
             console.log('✅ Chat Manager initialized');
         } else {
             throw new Error('Chat Manager not available');
+        }
+
+        // Set up model change listener
+        document.addEventListener('modelChanged', (event) => {
+            console.log('Model changed:', event.detail.model.name);
+            this.handleModelChange(event.detail);
+        });
+        
+        // Trigger initial UI update now that model config is available
+        if (window.puterUIManager && typeof puterUIManager.updateUI === 'function') {
+            puterUIManager.updateUI();
         }
     }
 
@@ -465,34 +506,104 @@ class PuterApp {
     }
 
     /**
+     * Handle model change events
+     */
+    handleModelChange(modelData) {
+        const { model, capabilities } = modelData;
+        
+        // Update UI based on model capabilities
+        this.updateUIForModel(model, capabilities);
+        
+        // Also trigger UI manager update
+        if (window.puterUIManager && typeof puterUIManager.updateUI === 'function') {
+            puterUIManager.currentModel = model.id;
+            puterUIManager.updateUI();
+        }
+        
+        // Log model change for debugging
+        console.log(`Model changed to: ${model.name} (${model.provider})`);
+        console.log('Capabilities:', capabilities);
+    }
+
+    /**
+     * Update UI elements based on selected model
+     */
+    updateUIForModel(model, capabilities) {
+        // Update main model selector
+        const mainSelector = document.getElementById('modelSelect');
+        if (mainSelector) {
+            mainSelector.value = model.id;
+        }
+
+        // Update placeholder text based on model type
+        const messageInput = document.getElementById('messageInput');
+        if (messageInput) {
+            if (capabilities.imageGeneration) {
+                messageInput.placeholder = `Describe an image for ${model.name} to generate...`;
+            } else if (capabilities.vision) {
+                messageInput.placeholder = `Ask ${model.name} about text or images...`;
+            } else {
+                messageInput.placeholder = `Chat with ${model.name}...`;
+            }
+        }
+
+        // Show/hide file upload - only for GPT-4 Vision
+        const fileUpload = document.querySelector('.file-upload');
+        if (fileUpload) {
+            // Only show for GPT-4 Vision (model.id === 'gpt-4' and has image input support)
+            const showFileUpload = model.id === 'gpt-4' && capabilities.supportsImageInput;
+            fileUpload.style.display = showFileUpload ? 'block' : 'none';
+            
+            // Update tooltip when visible
+            if (showFileUpload) {
+                const fileInput = document.getElementById('fileInput');
+                const fileBtn = document.querySelector('.file-btn');
+                if (fileInput) fileInput.title = 'Upload images for GPT-4 Vision analysis';
+                if (fileBtn) fileBtn.title = 'Upload images for GPT-4 Vision';
+            }
+        }
+    }
+
+    /**
      * Show help dialog
      */
     showHelp() {
+        const modelCount = this.modelConfig ? this.modelConfig.getAllModels().length : 'many';
         const helpContent = `
         <div style="max-width: 600px;">
             <h3>🤖 Puter AI Chatbot Help</h3>
             
-            <h4>Available Models:</h4>
+            <h4>Available Models (${modelCount} total):</h4>
             <ul>
-                <li><strong>GPT-4.1 nano:</strong> Fast text generation</li>
-                <li><strong>GPT-4:</strong> Advanced model with vision capabilities</li>
-                <li><strong>Claude:</strong> Strong reasoning and analysis</li>
-                <li><strong>DALL-E 3:</strong> Image generation from text</li>
+                <li><strong>💬 Chat Models:</strong> GPT-4o, Claude, Gemini, Llama, and more</li>
+                <li><strong>👁️ Vision Models:</strong> Analyze and understand images</li>
+                <li><strong>🎨 Text-to-Image:</strong> Generate images from descriptions</li>
+                <li><strong>📝 Image-to-Text:</strong> Extract text and describe images</li>
+                <li><strong>🔊 Text-to-Speech:</strong> Convert text to natural speech</li>
             </ul>
             
             <h4>Features:</h4>
             <ul>
-                <li>📝 Text conversations</li>
+                <li>📝 Advanced text conversations with context memory</li>
                 <li>🖼️ Image analysis (drag & drop or click to upload)</li>
-                <li>🎨 Image generation</li>
-                <li>⚡ Streaming responses</li>
-                <li>🆓 Test mode for free image generation</li>
+                <li>🎨 Image generation from text descriptions</li>
+                <li>⚡ Streaming responses for real-time interaction</li>
+                <li>💾 Persistent chat memory across sessions</li>
+                <li>🔧 Organized model categories in sidebar</li>
+                <li>⚙️ Customizable model parameters</li>
+            </ul>
+            
+            <h4>Sidebar Features:</h4>
+            <ul>
+                <li><strong>Model Categories:</strong> Browse models by type</li>
+                <li><strong>Chat Memory:</strong> Clear history or export conversations</li>
+                <li><strong>Model Info:</strong> View capabilities and details</li>
+                <li><strong>Quick Selection:</strong> One-click model switching</li>
             </ul>
             
             <h4>Keyboard Shortcuts:</h4>
             <ul>
                 <li><kbd>Ctrl/Cmd + Enter:</kbd> Send message</li>
-                <li><kbd>Ctrl/Cmd + Shift + Enter:</kbd> Stream message</li>
                 <li><kbd>Escape:</kbd> Clear input</li>
                 <li><kbd>Ctrl/Cmd + K:</kbd> Focus input</li>
                 <li><kbd>F1:</kbd> Show this help</li>
@@ -500,10 +611,11 @@ class PuterApp {
             
             <h4>Tips:</h4>
             <ul>
-                <li>Use test mode for free DALL-E 3 image generation</li>
-                <li>Upload images to ask questions about them</li>
-                <li>Try the quick example buttons to get started</li>
-                <li>Use streaming for longer responses</li>
+                <li>Use the sidebar to explore different AI models</li>
+                <li>Enable "Remember Chat" to maintain conversation context</li>
+                <li>Try vision models with image uploads for analysis</li>
+                <li>Use text-to-image models for creative generation</li>
+                <li>Export your chat history to save important conversations</li>
             </ul>
         </div>
         `;
