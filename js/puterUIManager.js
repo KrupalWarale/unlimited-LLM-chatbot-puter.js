@@ -53,7 +53,7 @@ class PuterUIManager {
         this.elements.modelParams = document.querySelector('.model-params');
         this.elements.maxTokensInput = document.getElementById('maxTokensInput');
         this.elements.temperatureInput = document.getElementById('temperatureInput');
-        this.elements.exampleButtons = document.querySelectorAll('.example-btn');
+        this.elements.exampleButtons = document.querySelectorAll('.example-btn, .suggestion');
         this.elements.examplesPanel = document.querySelector('.examples-panel');
         this.elements.settingsSidebar = document.getElementById('settingsSidebar'); // Bind new sidebar
         this.elements.closeSidebarButton = this.elements.settingsSidebar.querySelector('.close-sidebar'); // Bind close button
@@ -96,6 +96,16 @@ class PuterUIManager {
         if (this.elements.closeSidebarButton) {
             this.elements.closeSidebarButton.addEventListener('click', () => {
                 this.elements.settingsSidebar.classList.remove('open'); // Close sidebar
+            });
+        }
+
+        // Example/suggestion buttons
+        if (this.elements.exampleButtons) {
+            this.elements.exampleButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const text = btn.getAttribute('data-text') || btn.textContent.trim();
+                    this.handleExampleClick(text);
+                });
             });
         }
 
@@ -247,6 +257,7 @@ class PuterUIManager {
 
         this.isProcessing = true;
         this.setButtonsState(false);
+        this.setSendButtonLoading(true);
 
         try {
             // Debug image information
@@ -281,6 +292,7 @@ class PuterUIManager {
         } finally {
             this.isProcessing = false;
             this.setButtonsState(true);
+            this.setSendButtonLoading(false);
         }
     }
 
@@ -354,11 +366,7 @@ class PuterUIManager {
         if (content) {
             html += `<div class="message-content">${this.formatContent(content)}</div>`;
         }
-        
-        if (isStreaming) {
-            html += '<div class="typing-indicator">...</div>';
-        }
-        
+        // Removed typing-indicator logic
         messageDiv.innerHTML = html;
         this.elements.messages.appendChild(messageDiv);
         this.scrollToBottom();
@@ -386,15 +394,17 @@ class PuterUIManager {
      * Update streaming message content
      */
     updateStreamingMessage(messageDiv, content) {
-        const contentDiv = messageDiv.querySelector('.message-content') || 
-                          document.createElement('div');
-        contentDiv.className = 'message-content';
-        contentDiv.innerHTML = this.formatContent(content);
-        
-        if (!messageDiv.contains(contentDiv)) {
-            messageDiv.appendChild(contentDiv);
+        // Only update the message content, no typing indicator
+        const contentDiv = messageDiv.querySelector('.message-content');
+        if (contentDiv) {
+            contentDiv.innerHTML = this.formatContent(content);
+        } else {
+            // If not present, create it
+            const newContentDiv = document.createElement('div');
+            newContentDiv.className = 'message-content';
+            newContentDiv.innerHTML = this.formatContent(content);
+            messageDiv.appendChild(newContentDiv);
         }
-        
         this.scrollToBottom();
     }
 
@@ -402,10 +412,7 @@ class PuterUIManager {
      * Complete streaming message
      */
     completeStreamingMessage(messageDiv) {
-        const indicator = messageDiv.querySelector('.typing-indicator');
-        if (indicator) {
-            indicator.remove();
-        }
+        // No typing indicator to remove anymore
     }
 
     /**
@@ -491,6 +498,20 @@ class PuterUIManager {
      */
     scrollToBottom() {
         this.elements.messages.scrollTop = this.elements.messages.scrollHeight;
+    }
+
+    setSendButtonLoading(isLoading) {
+        const btn = this.elements.sendButton;
+        if (!btn) return;
+        if (isLoading) {
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.innerHTML = `<svg class="spinner" width="20" height="20" viewBox="0 0 50 50"><circle class="path" cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="5"></circle></svg>`;
+        } else {
+            btn.disabled = false;
+            btn.classList.remove('loading');
+            btn.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>`;
+        }
     }
 }
 

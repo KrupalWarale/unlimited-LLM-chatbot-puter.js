@@ -10,55 +10,123 @@
 </head>
 <body>
     <div id="app">
-        <header class="app-header">
-            <h1>🤖 Puter AI Chatbot</h1>
-            <p>Chat with AI models powered by Puter platform</p>
-            <button id="toggleParams" class="toggle-params">⚙️</button>
-        </header>
-        
-        <div class="main-chat-interface">
-            <div id="messages" class="messages"></div>
-            
-            <div class="chat-input-area">
-                <div class="input-content">
-                    <textarea id="messageInput" placeholder="Type your message..."></textarea>
-                    <div class="input-controls">
-                        <div class="model-selector">
-                            <select id="modelSelect" title="Select AI Model">
-                                <option value="gpt-4-nano">GPT-4.1 nano</option>
-                                <option value="gpt-4">GPT-4</option>
-                                <option value="claude">Claude</option>
-                                <option value="dall-e-3">DALL-E 3</option>
-                            </select>
-                        </div>
+        <div class="chat-container">
+            <header class="header">
+                <div class="header-content">
+                    <div class="bot-avatar">🤖</div>
+                    <div class="header-text">
+                        <h1>Puter AI Assistant</h1>
+                        <p>Chat with AI models powered by Puter platform</p>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span class="status-text">Online</span>
+                    <button id="toggleParams" class="settings-btn" title="Settings">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <div id="messages" class="chat-messages">
+                <!-- Welcome message will be added here -->
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="suggestions" id="suggestions">
+                    <div class="suggestion" data-text="Explain machine learning basics">🧠 Explain ML basics</div>
+                    <div class="suggestion" data-text="Write a Python script">💻 Code assistance</div>
+                    <div class="suggestion" data-text="Summarize this document">📄 Summarize text</div>
+                    <div class="suggestion" data-text="Creative writing help">✍️ Creative writing</div>
+                </div>
+
+                <div class="input-container">
+                    <textarea 
+                        id="messageInput" 
+                        class="message-input"
+                        placeholder="Ask me anything... I'm here to help!"
+                        rows="1"
+                    ></textarea>
+                    <div class="input-actions">
                         <div class="file-upload">
-                            <input type="file" id="fileInput" accept="image/*" multiple>
-                            <label for="fileInput" title="Upload images">🖼️</label>
+                            <input type="file" id="fileInput" accept="image/*" multiple class="file-input-hidden" title="Upload image files" placeholder="Upload image files">
+                            <button class="file-btn" onclick="document.getElementById('fileInput').click()" title="Upload images">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21,15 16,10 5,21"></polyline>
+                                </svg>
+                            </button>
                         </div>
-                        <button id="streamButton" class="primary">Send</button>
+                        <select id="modelSelect" class="model-selector" title="Select AI Model">
+                            <option value="gpt-4-nano">GPT-4.1 nano</option>
+                            <option value="gpt-4">GPT-4</option>
+                            <option value="claude">Claude</option>
+                            <option value="dall-e-3">DALL-E 3</option>
+                        </select>
+                        <button id="streamButton" class="send-btn" title="Send message">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="settingsSidebar" class="settings-sidebar">
-            <button class="close-sidebar">✖️</button>
-            <h3>Settings</h3>
+            <div class="sidebar-header">
+                <h3>Settings</h3>
+                <button class="close-sidebar" title="Close settings sidebar">
+                    <span class="visually-hidden">Close settings sidebar</span>
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
             <div class="model-params">
                 <div class="param-group">
-                    <label>Model Options:</label>
+                    <label class="param-label">Model Options:</label>
                     <div class="checkbox-group">
-                        <label><input type="checkbox" id="testMode"> Test Mode (free)</label>
-                        <label><input type="checkbox" id="streamMode"> Stream Response</label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="testMode">
+                            <span class="checkmark"></span>
+                            Test Mode (free)
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="streamMode" checked>
+                            <span class="checkmark"></span>
+                            Stream Response
+                        </label>
                     </div>
                 </div>
+                
                 <div class="param-group">
-                    <label for="maxTokensInput">Max Tokens:</label>
-                    <input type="number" id="maxTokensInput" value="1000" min="1" max="4000">
+                    <label for="maxTokensInput" class="param-label">Max Tokens:</label>
+                    <div class="input-with-value">
+                        <input type="range" id="maxTokensInput" value="1000" min="1" max="4000" class="param-slider">
+                        <span class="param-value" id="maxTokensValue">1000</span>
+                    </div>
                 </div>
+                
                 <div class="param-group">
-                    <label for="temperatureInput">Temperature:</label>
-                    <input type="number" id="temperatureInput" value="0.7" step="0.1" min="0" max="1">
+                    <label for="temperatureInput" class="param-label">Temperature:</label>
+                    <div class="input-with-value">
+                        <input type="range" id="temperatureInput" value="0.7" step="0.1" min="0" max="1" class="param-slider">
+                        <span class="param-value" id="temperatureValue">0.7</span>
+                    </div>
                 </div>
             </div>
         </div>

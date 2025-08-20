@@ -116,7 +116,7 @@ class PuterChatManager {
      * Handle streaming response
      */
     async handleStreamingResponse(response) {
-        let streamingMessageDiv = puterUIManager.displayMessage('', 'assistant', [], true);
+        let streamingMessageDiv = puterUIManager.displayMessage('', 'assistant', [], false); // isStreaming now always false
         let fullContent = '';
 
         try {
@@ -126,9 +126,9 @@ class PuterChatManager {
                     puterUIManager.updateStreamingMessage(streamingMessageDiv, fullContent);
                 }
             }
-            
+
             puterUIManager.completeStreamingMessage(streamingMessageDiv);
-            
+
         } catch (error) {
             puterUIManager.completeStreamingMessage(streamingMessageDiv);
             throw new Error(`Streaming failed: ${error.message}`);
