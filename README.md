@@ -1,144 +1,58 @@
 # Puter AI Chatbot
 
-A modern, multimodal AI chatbot powered by the Puter platform. Experience seamless interactions with GPT-4, Claude, and DALL-E 3 through a single, intuitive interface with no backend required!
+A clean, efficient AI chatbot powered by the Puter platform. Chat with multiple AI models including GPT-4, Claude, and DALL-E 3 with no backend required!
 
 ## 🌟 Features
 
-- **Powered by Puter.js**: Serverless AI, cloud storage, and authentication
-- **Multiple AI Models**: GPT-4.1 nano, GPT-4, Claude, and DALL-E 3
-- **Multimodal Interactions**: Text conversations, image analysis, and image generation
-- **Vision Capabilities**: Upload images and ask questions about them
-- **Streaming Responses**: Real-time response streaming for better UX
-- **Professional Image Generation**: High-quality DALL-E 3 image creation
-- **Drag & Drop**: Easy image upload with drag-and-drop support
-- **Responsive Design**: Works perfectly on desktop and mobile devices
+- **Multiple AI Models**: 30+ models including GPT-4, Claude, Gemini, and DALL-E 3
+- **Vision Capabilities**: Upload images and ask questions about them (GPT-4 Vision)
+- **Image Generation**: Create images with DALL-E 3
+- **Streaming Responses**: Real-time response streaming
+- **Mobile Optimized**: Works perfectly on all devices
 - **No Backend Required**: Everything runs client-side with Puter.js
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-- Internet connection for Puter.js library
-
-### Installation
-
-1. **Clone or download** the project files
-2. **Open index.html** in your browser, or use a local server:
+1. **Open `index.html`** in your browser, or use a local server:
    ```bash
-   # Using Python
    python -m http.server 8080
-   
-   # Using Node.js http-server
-   npx http-server -p 8080
-   
-   # Or simply open index.html in your browser
    ```
 
-3. **Start chatting!** The app will automatically load Puter.js and initialize
-
-### Basic Usage
-
-1. **Select a Model**: Choose from GPT-4.1 nano, GPT-4, Claude, or DALL-E 3
-2. **Type your message**: Use the text area to ask questions or give prompts
-3. **Upload images**: Drag & drop or click to upload images for analysis
-4. **Use streaming**: Click "Stream" for real-time response generation
-5. **Try examples**: Click quick example buttons to get started
+2. **Start chatting!** Select a model and begin your conversation.
 
 ## 🤖 Available Models
 
-| Model | Type | Capabilities | Description |
-|-------|------|-------------|-------------|
-| **GPT-4.1 nano** | Text | Fast text generation | Efficient model for quick responses |
-| **GPT-4** | Multimodal | Text + Vision | Advanced model with image analysis |
-| **Claude** | Multimodal | Text + Vision | Anthropic's reasoning-focused model |
-| **DALL-E 3** | Image Generation | Text to Image | Create images from text descriptions |
+- **Chat Models**: GPT-4o, Claude, Gemini, Llama, DeepSeek, and more
+- **Vision Models**: GPT-4 Vision for image analysis
+- **Image Generation**: DALL-E 3 for creating images from text
 
 ## 🎯 Use Cases
 
-### Text Conversations
-- Ask questions about any topic
-- Get explanations and tutorials  
-- Creative writing assistance
-- Code help and debugging
-
-### Image Analysis
-1. Upload an image (JPG, PNG, WebP)
-2. Ask questions like "What do you see?" or "Describe this image"
-3. Get detailed analysis and descriptions
-
-### Image Generation
-1. Select DALL-E 3 model
-2. Describe the image you want in detail
-3. Click send to generate your image
-4. Get AI-generated artwork
-
-### Streaming Chat
-- Click "Stream" button for real-time responses
-- Watch text appear as the AI generates it
-- Better experience for longer responses
-
-## ⚙️ Settings & Features
-
-### Model Options
-- **Professional Mode**: High-quality DALL-E 3 image generation
-- **Stream Mode**: Real-time response streaming
-
-### Keyboard Shortcuts
-- **Ctrl/Cmd + Enter**: Send message
-- **Ctrl/Cmd + Shift + Enter**: Stream message
-- **Escape**: Clear input
-- **Ctrl/Cmd + K**: Focus input
-- **F1**: Show help dialog
-
-### File Uploads
-- **Supported formats**: JPG, PNG, GIF, WebP
-- **Drag & Drop**: Drop images anywhere on the page
-- **Multiple files**: Upload multiple images at once
-- **Preview**: See uploaded images before sending
+- **Text Conversations**: Ask questions, get explanations, creative writing help
+- **Image Analysis**: Upload images and ask "What do you see?"
+- **Image Generation**: Describe an image and let DALL-E 3 create it
+- **Code Help**: Get programming assistance and debugging help
 
 ## 🏗️ Architecture
 
-### Core Components
+Simple, clean architecture with just 4 core files:
 
-#### Puter Integration
-- **PuterModelCapabilities**: Model registry and capability management
-- **PuterUIManager**: Dynamic UI updates and user interactions
-- **PuterChatManager**: API communication with Puter services
-- **PuterApp**: Application initialization and coordination
-
-### File Structure
 ```
-putterJsBot/
-├── index.html                      # Main application HTML
-├── styles.css                      # Complete styling
+├── index.html                      # Main application
+├── styles.css                      # Styling
 ├── js/
-│   ├── puterModelCapabilities.js   # Model definitions and validation
-│   ├── puterUIManager.js          # UI management and interactions
-│   ├── puterChatManager.js        # API communication layer
-│   └── puterApp.js                # Application coordinator
-├── package.json                    # Project metadata
-└── README.md                      # This file
+│   ├── puterModelCapabilities.js   # Model definitions
+│   ├── puterVisionHandler.js       # Image analysis
+│   ├── puterUIManager.js           # UI management
+│   ├── puterChatManager.js         # API communication
+│   └── puterApp.js                 # Application coordinator
+└── manifest.json                   # PWA manifest
 ```
 
 ## 🔧 Customization
 
-### Adding Quick Examples
-Modify the examples in `index.html`:
-```html
-<button class="example-btn" data-example="Your prompt here">Button Text</button>
-```
-
-### Styling Customization
-Update CSS variables in `styles.css`:
-```css
-:root {
-    --primary-color: #4f46e5;     /* Main theme color */
-    --puter-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-```
-
-### Adding New Models
-Extend the model registry in `puterModelCapabilities.js`:
+### Add New Models
+Edit `puterModelCapabilities.js`:
 ```javascript
 'new-model': {
     name: 'New Model',
@@ -149,94 +63,84 @@ Extend the model registry in `puterModelCapabilities.js`:
 }
 ```
 
-## 🌐 About Puter
-
-[Puter](https://puter.com) is an open-source cloud operating system that provides:
-- **Privacy-focused**: No tracking or data monetization
-- **Serverless architecture**: No backend setup required
-- **Free tier**: Generous free usage limits
-- **Open source**: Transparent and community-driven
-
-## 🛠️ Development
-
-### Debug Mode
-Open browser console to access debug information:
-```javascript
-// Check app status
-puterApp.getStatus();
-
-// Show help
-puterApp.showHelp();
-
-// Access managers
-puterUIManager.showError('Test message');
+### Styling
+Update CSS variables in `styles.css`:
+```css
+:root {
+    --primary-color: #4f46e5;
+    --puter-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
 ```
 
-### Local Development
-1. Clone the repository
-2. Make your changes
-3. Test in browser
-4. No build process required!
+## 🌐 About Puter
 
-## 🐛 Troubleshooting
+[Puter](https://puter.com) provides serverless AI with no tracking or data monetization.
 
-### Common Issues
+## 💸 Free & Unlimited LLMs with Puter
 
-**"Puter.js library failed to load"**
-- Check internet connection
-- Try refreshing the page
-- Check browser console for errors
+- **Free to use**: Start chatting instantly — no credit card, no API keys.
+- **Unlimited conversations**: Explore long sessions and high‑volume chatting without worrying about quotas.
+- **All-in-one hub**: Access a wide catalog of leading models (GPT, Claude, Gemini, Llama, DeepSeek, and more) from one UI.
+- **Zero backend costs**: Everything runs client‑side with Puter.js — nothing to deploy or maintain.
+- **Privacy-first**: No tracking, no data monetization.
 
-**Images not uploading**
-- Ensure file size is reasonable (< 10MB recommended)
-- Check file format (JPG, PNG, WebP supported)
-- Try refreshing the page
+> Note: Model lineup and availability are continuously improving. Usage terms may evolve; check Puter’s site for the latest details.
 
-**Model not responding**
-- Check if you have internet connection
-- Try switching models
-- Look at browser console for error messages
+## 📚 Full Model List (Configured in this project)
 
-**Vision/image analysis not working**
-- Make sure you selected GPT-4 or Claude
-- Upload image first, then ask your question
-- Try the "Analyze Image" example button
+### Chat Models
+- GPT-4o Mini (`gpt-4o-mini`)
+- GPT-4.1 (`gpt-4.1`)
+- GPT-4.1 Mini (`gpt-4.1-mini`)
+- GPT-4.1 Nano (`gpt-4.1-nano`)
+- GPT-4.5 Preview (`gpt-4.5-preview`)
+- GPT-5 (`gpt-5`)
+- GPT-5 Mini (`gpt-5-mini`)
+- GPT-5 Nano (`gpt-5-nano`)
+- GPT-5 Chat Latest (`gpt-5-chat-latest`)
+- O1 (`o1`)
+- O1 Mini (`o1-mini`)
+- O1 Pro (`o1-pro`)
+- O3 (`o3`)
+- O3 Mini (`o3-mini`)
+- O4 Mini (`o4-mini`)
+- Claude Sonnet 4 (`claude-sonnet-4`)
+- Claude Opus 4 (`claude-opus-4`)
+- Claude 3.7 Sonnet (`claude-3-7-sonnet`)
+- Claude 3.5 Sonnet (`claude-3-5-sonnet`)
+- DeepSeek Chat (`deepseek-chat`)
+- DeepSeek Reasoner (`deepseek-reasoner`)
+- Gemini 2.0 Flash (`gemini-2.0-flash`)
+- Gemini 1.5 Flash (`gemini-1.5-flash`)
+- Llama 3.1 8B Instruct (`meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo`)
+- Llama 3.1 70B Instruct (`meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo`)
+- Llama 3.1 405B Instruct (`meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo`)
+- Mistral Large Latest (`mistral-large-latest`)
+- Pixtral Large Latest (`pixtral-large-latest`)
+- Codestral Latest (`codestral-latest`)
+- Gemma 2 27B IT (`google/gemma-2-27b-it`)
+- Grok Beta (`grok-beta`)
 
-### Debug Information
-1. Press **F12** to open browser developer tools
-2. Check the **Console** tab for error messages
-3. Press **F1** in the app to show help dialog
-4. Try refreshing the page if issues persist
+### Vision Models (special code path)
+- GPT-4 Vision (`gpt-4`)
+
+### Image Generation
+- DALL-E 3 (`dall-e-3`)
 
 ## 📱 Mobile Support
 
-The chatbot is fully responsive and works great on mobile devices:
-- Touch-friendly interface
-- Mobile-optimized layout  
-- Drag & drop support on mobile
-- All features available on smaller screens
+Fully responsive design with touch-friendly interface and mobile-optimized layout.
 
-## 🔒 Privacy & Security
+## 🔒 Privacy
 
-- **No data storage**: Conversations are not stored
-- **Client-side only**: No server-side processing
-- **Puter privacy**: Puter doesn't track or monetize data
-- **Secure connections**: All API calls use HTTPS
+- No data storage - conversations are not saved
+- Client-side only processing
+- Secure HTTPS connections
 
 ## 📄 License
 
-MIT License - feel free to modify and distribute.
-
-## 🤝 Support
-
-For issues and questions:
-1. Check the troubleshooting section above
-2. Try refreshing the page
-3. Check browser console for error messages
-4. Visit [Puter Documentation](https://docs.puter.com) for API details
+MIT License - free to use and modify.
 
 ---
 
-**Built with ❤️ using Puter.js and modern web technologies**
-
-Try it now by opening `index.html` in your browser!
+**Built with Puter.js - Simple, Clean, Efficient**

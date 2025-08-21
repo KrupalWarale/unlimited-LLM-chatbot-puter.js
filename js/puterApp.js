@@ -29,9 +29,6 @@ class PuterApp {
             // Initialize components
             await this.initializeComponents();
 
-            // Set up global error handling
-            this.setupErrorHandling();
-
             // Set up keyboard shortcuts
             this.setupKeyboardShortcuts();
 
@@ -66,286 +63,27 @@ class PuterApp {
         });
     }
     
-    /**
-     * Authenticate with Puter
-     */
-    async authenticateWithPuter() {
-        try {
-            console.log('🔑 Checking Puter authentication status...');
-            
-            // First, let's inspect what's available in the puter object
-            console.log('Available puter methods:', Object.keys(puter));
-            if (puter.auth) {
-                console.log('Available auth methods:', Object.keys(puter.auth));
-            }
-            if (puter.user) {
-                console.log('Available user methods:', Object.keys(puter.user));
-            }
-            
-            // Check if already authenticated using different possible API patterns
-            let isAuthenticated = false;
-            let currentUser = null;
-            
-            try {
-                // Try different possible authentication check methods
-                if (puter.auth && typeof puter.auth.getUser === 'function') {
-                    currentUser = await puter.auth.getUser();
-                    isAuthenticated = !!currentUser;
-                } else if (puter.user && typeof puter.user.whoami === 'function') {
-                    currentUser = await puter.user.whoami();
-                    isAuthenticated = !!currentUser;
-                } else if (puter.auth && typeof puter.auth.isAuthenticated === 'function') {
-                    isAuthenticated = await puter.auth.isAuthenticated();
-                } else {
-                    // Try to make a simple API call to test authentication
-                    try {
-                        // This should fail if not authenticated
-                        await puter.ai.chat('test', { model: 'gpt-4o-mini', test: true });
-                        isAuthenticated = true;
-                        console.log('✅ Authentication verified through API test');
-                    } catch (testError) {
-                        if (testError.message && testError.message.includes('401')) {
-                            isAuthenticated = false;
-                            console.log('🔑 Not authenticated - received 401 error');
-                        } else {
-                            console.log('❓ Authentication status unclear:', testError.message);
-                            // Assume not authenticated to be safe
-                            isAuthenticated = false;
-                        }
-                    }
-                }
-                
-                if (isAuthenticated) {
-                    console.log('✅ Already authenticated', currentUser ? `as: ${currentUser.username || currentUser.name || 'user'}` : '');
-                    return true;
-                }
-            } catch (error) {
-                console.log('🔑 Authentication check failed, proceeding with sign-in:', error.message);
-            }
 
-            // Show authentication UI to the user
-            return new Promise((resolve) => {
-                this.showAuthUI(resolve);
-            });
-            
-        } catch (error) {
-            console.error('❌ Authentication process error:', error);
-            this.showAuthError('Authentication process failed. Please refresh and try again.');
-            return false;
-        }
-    }
-    
-    /**
-     * Show authentication UI
-     */
-    showAuthUI(resolveCallback) {
-        const authUI = document.createElement('div');
-        authUI.id = 'puter-auth-ui';
-        authUI.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-        `;
-        
-        authUI.innerHTML = `
-            <div style="
-                background-color: white;
-                padding: 30px;
-                border-radius: 10px;
-                max-width: 500px;
-                text-align: center;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            ">
-                <h2 style="margin-top: 0;">Authentication Required</h2>
-                <p style="margin-bottom: 20px;">Please sign in to your Puter account to use the AI services.</p>
-                <p style="font-size: 14px; color: #666; margin-bottom: 20px;">Don't have an account? You'll be able to create one during the sign-in process.</p>
-                <div id="puter-auth-status" style="margin-bottom: 20px; font-style: italic;">Ready to authenticate...</div>
-                <div style="display: flex; gap: 10px; justify-content: center;">
-                    <button id="puter-auth-button" style="
-                        background-color: #007bff;
-                        color: white;
-                        border: none;
-                        padding: 10px 20px;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        font-size: 16px;
-                    ">Sign In with Puter</button>
-                    <button id="puter-skip-button" style="
-                        background-color: #6c757d;
-                        color: white;
-                        border: none;
-                        padding: 10px 20px;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        font-size: 16px;
-                    ">Try Without Auth</button>
-                </div>
-                <div style="margin-top: 15px; font-size: 12px; color: #999;">
-                    Note: Some features may be limited without authentication
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(authUI);
-        
-        // Add click handler for the auth button
-        document.getElementById('puter-auth-button').addEventListener('click', async () => {
-            const statusEl = document.getElementById('puter-auth-status');
-            const authBtn = document.getElementById('puter-auth-button');
-            
-            statusEl.textContent = 'Opening authentication...';
-            authBtn.disabled = true;
-            
-            try {
-                // Try different authentication methods
-                let authResult = null;
-                
-                if (puter.auth && typeof puter.auth.signIn === 'function') {
-                    authResult = await puter.auth.signIn();
-                } else if (puter.auth && typeof puter.auth.login === 'function') {
-                    authResult = await puter.auth.login();
-                } else if (typeof puter.signIn === 'function') {
-                    authResult = await puter.signIn();
-                } else {
-                    throw new Error('No authentication method found in Puter API');
-                }
-                
-                statusEl.textContent = 'Authentication successful!';
-                statusEl.style.color = '#28a745';
-                
-                // Hide auth UI and continue
-                setTimeout(() => {
-                    this.hideAuthUI();
-                    if (authResult && authResult.username) {
-                        this.showAuthSuccess(authResult.username);
-                    }
-                    resolveCallback(true);
-                }, 1000);
-                
-            } catch (error) {
-                console.error('Authentication error:', error);
-                statusEl.textContent = `Authentication failed: ${error.message}`;
-                statusEl.style.color = '#dc3545';
-                authBtn.disabled = false;
-            }
-        });
-        
-        // Add click handler for skip button (try without auth)
-        document.getElementById('puter-skip-button').addEventListener('click', () => {
-            console.log('⚠️ Proceeding without authentication');
-            this.hideAuthUI();
-            resolveCallback(true); // Allow to proceed, but API calls may fail
-        });
-    }
-    
-    /**
-     * Hide authentication UI
-     */
-    hideAuthUI() {
-        const authUI = document.getElementById('puter-auth-ui');
-        if (authUI) {
-            authUI.remove();
-        }
-    }
-    
-    /**
-     * Show authentication success message
-     */
-    showAuthSuccess(username) {
-        const successToast = document.createElement('div');
-        successToast.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #28a745;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            z-index: 10000;
-            animation: fadeInOut 5s forwards;
-        `;
-        
-        // Add animation keyframes
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeInOut {
-                0% { opacity: 0; transform: translateY(-20px); }
-                10% { opacity: 1; transform: translateY(0); }
-                80% { opacity: 1; transform: translateY(0); }
-                100% { opacity: 0; transform: translateY(-20px); }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        successToast.textContent = `Signed in as ${username}`;
-        document.body.appendChild(successToast);
-        
-        // Remove after animation completes
-        setTimeout(() => {
-            successToast.remove();
-        }, 5000);
-    }
-    
-    /**
-     * Show authentication error
-     */
-    showAuthError(message) {
-        const authStatus = document.getElementById('puter-auth-status');
-        if (authStatus) {
-            authStatus.textContent = `Authentication error: ${message}`;
-            authStatus.style.color = '#dc3545';
-        }
-    }
 
     /**
      * Initialize all application components
      */
     async initializeComponents() {
-        // First authenticate with Puter
-        const authenticated = await this.authenticateWithPuter();
-        if (!authenticated) {
-            throw new Error('Authentication required to use Puter AI services');
-        }
-        
-        // Initialize Model Configuration
-        if (window.PuterModelConfig) {
-            this.modelConfig = new PuterModelConfig();
-            console.log('✅ Model Configuration initialized');
-            console.log('Available models:', this.modelConfig.getAllModels().length);
-        } else {
-            throw new Error('Model Configuration not available');
-        }
-
-        // Initialize Chat Memory
-        if (window.PuterChatMemory) {
-            this.chatMemory = new PuterChatMemory();
-            this.chatMemory.initializeUI();
-            console.log('✅ Chat Memory initialized');
-        } else {
-            throw new Error('Chat Memory not available');
-        }
-
-        // Initialize Sidebar Manager
-        if (window.PuterSidebarManager) {
-            this.sidebarManager = new PuterSidebarManager(this.modelConfig, this.chatMemory);
-            window.puterSidebar = this.sidebarManager; // Make globally available
-            console.log('✅ Sidebar Manager initialized');
-        } else {
-            throw new Error('Sidebar Manager not available');
-        }
+        // Debug: Check what's available
+        console.log('🔍 Checking available components:');
+        console.log('- PuterUIManager class:', typeof PuterUIManager);
+        console.log('- window.puterUIManager:', typeof window.puterUIManager);
+        console.log('- puterUIManager:', typeof puterUIManager);
         
         // Initialize UI Manager
         if (window.puterUIManager) {
             puterUIManager.init();
             console.log('✅ UI Manager initialized');
+        } else if (typeof PuterUIManager !== 'undefined') {
+            // Fallback: create instance if class exists but global instance doesn't
+            window.puterUIManager = new PuterUIManager();
+            puterUIManager.init();
+            console.log('✅ UI Manager initialized (fallback)');
         } else {
             throw new Error('UI Manager not available');
         }
@@ -357,45 +95,15 @@ class PuterApp {
             throw new Error('Model Capabilities not available');
         }
 
-        // Initialize Chat Manager with memory support
+        // Initialize Chat Manager
         if (window.puterChatManager) {
-            // Pass memory instance to chat manager if it supports it
-            if (typeof puterChatManager.setMemory === 'function') {
-                puterChatManager.setMemory(this.chatMemory);
-            }
             console.log('✅ Chat Manager initialized');
         } else {
             throw new Error('Chat Manager not available');
         }
-
-        // Set up model change listener
-        document.addEventListener('modelChanged', (event) => {
-            console.log('Model changed:', event.detail.model.name);
-            this.handleModelChange(event.detail);
-        });
-        
-        // Trigger initial UI update now that model config is available
-        if (window.puterUIManager && typeof puterUIManager.updateUI === 'function') {
-            puterUIManager.updateUI();
-        }
     }
 
-    /**
-     * Set up global error handling
-     */
-    setupErrorHandling() {
-        // Handle unhandled promise rejections
-        window.addEventListener('unhandledrejection', (event) => {
-            console.error('Unhandled promise rejection:', event.reason);
-            this.handleGlobalError(event.reason);
-        });
 
-        // Handle general errors
-        window.addEventListener('error', (event) => {
-            console.error('Global error:', event.error);
-            this.handleGlobalError(event.error);
-        });
-    }
 
     /**
      * Set up keyboard shortcuts
@@ -436,27 +144,7 @@ class PuterApp {
         });
     }
 
-    /**
-     * Handle global errors
-     */
-    handleGlobalError(error) {
-        if (!this.isInitialized) return;
 
-        console.error('Global error handled:', error);
-        
-        // Don't show error for minor issues
-        if (error.message && (
-            error.message.includes('ResizeObserver') ||
-            error.message.includes('Non-Error promise rejection')
-        )) {
-            return;
-        }
-
-        // Show user-friendly error message
-        if (puterUIManager && typeof puterUIManager.showError === 'function') {
-            puterUIManager.showError('An unexpected error occurred. Please refresh the page if issues persist.');
-        }
-    }
 
     /**
      * Show initialization error
@@ -505,64 +193,7 @@ class PuterApp {
         document.body.appendChild(errorContainer);
     }
 
-    /**
-     * Handle model change events
-     */
-    handleModelChange(modelData) {
-        const { model, capabilities } = modelData;
-        
-        // Update UI based on model capabilities
-        this.updateUIForModel(model, capabilities);
-        
-        // Also trigger UI manager update
-        if (window.puterUIManager && typeof puterUIManager.updateUI === 'function') {
-            puterUIManager.currentModel = model.id;
-            puterUIManager.updateUI();
-        }
-        
-        // Log model change for debugging
-        console.log(`Model changed to: ${model.name} (${model.provider})`);
-        console.log('Capabilities:', capabilities);
-    }
 
-    /**
-     * Update UI elements based on selected model
-     */
-    updateUIForModel(model, capabilities) {
-        // Update main model selector
-        const mainSelector = document.getElementById('modelSelect');
-        if (mainSelector) {
-            mainSelector.value = model.id;
-        }
-
-        // Update placeholder text based on model type
-        const messageInput = document.getElementById('messageInput');
-        if (messageInput) {
-            if (capabilities.imageGeneration) {
-                messageInput.placeholder = `Describe an image for ${model.name} to generate...`;
-            } else if (capabilities.vision) {
-                messageInput.placeholder = `Ask ${model.name} about text or images...`;
-            } else {
-                messageInput.placeholder = `Chat with ${model.name}...`;
-            }
-        }
-
-        // Show/hide file upload - only for GPT-4 Vision
-        const fileUpload = document.querySelector('.file-upload');
-        if (fileUpload) {
-            // Only show for GPT-4 Vision (model.id === 'gpt-4' and has image input support)
-            const showFileUpload = model.id === 'gpt-4' && capabilities.supportsImageInput;
-            fileUpload.style.display = showFileUpload ? 'block' : 'none';
-            
-            // Update tooltip when visible
-            if (showFileUpload) {
-                const fileInput = document.getElementById('fileInput');
-                const fileBtn = document.querySelector('.file-btn');
-                if (fileInput) fileInput.title = 'Upload images for GPT-4 Vision analysis';
-                if (fileBtn) fileBtn.title = 'Upload images for GPT-4 Vision';
-            }
-        }
-    }
 
     /**
      * Show help dialog

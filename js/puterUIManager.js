@@ -35,6 +35,7 @@ class PuterUIManager {
         this.bindElements();
         this.bindEvents();
         this.updateUI();
+        this.updateSendButtonState();
         this.showWelcomeMessage();
     }
 
@@ -55,8 +56,8 @@ class PuterUIManager {
         this.elements.temperatureInput = document.getElementById('temperatureInput');
         this.elements.exampleButtons = document.querySelectorAll('.example-btn, .suggestion');
         this.elements.examplesPanel = document.querySelector('.examples-panel');
-        this.elements.settingsSidebar = document.getElementById('settingsSidebar'); // Bind new sidebar
-        this.elements.closeSidebarButton = this.elements.settingsSidebar.querySelector('.close-sidebar'); // Bind close button
+        this.elements.settingsSidebar = document.getElementById('settingsSidebar');
+        this.elements.closeSidebarButton = document.querySelector('.close-sidebar');
         this.elements.visionIndicator = document.getElementById('visionIndicator'); // Bind vision indicator
     }
 
@@ -358,21 +359,43 @@ class PuterUIManager {
      * Handle file upload
      */
     async handleFileUpload(files) {
-        for (const file of files) {
-            if (file.type.startsWith('image/')) {
-                try {
-                    const imageUrl = await this.fileToBase64(file);
-                    this.uploadedImages.push({
-                        file: file,
-                        url: imageUrl,
-                        name: file.name
-                    });
-                    this.displayUploadedImage(imageUrl, file.name);
-                } catch (error) {
-                    this.showError(`Failed to upload ${file.name}`);
+        const validFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+        
+        if (validFiles.length === 0) {
+            this.showError('Please select valid image files (JPG, PNG, GIF, WebP)');
+            return;
+        }
+
+        // Show upload progress for multiple files
+        if (validFiles.length > 1) {
+            this.showMessage(`Uploading ${validFiles.length} images...`, 'system');
+        }
+
+        for (const file of validFiles) {
+            try {
+                // Check file size (max 10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    this.showError(`${file.name} is too large. Maximum size is 10MB.`);
+                    continue;
                 }
+
+                const imageUrl = await this.fileToBase64(file);
+                this.uploadedImages.push({
+                    file: file,
+                    url: imageUrl,
+                    name: file.name
+                });
+                this.displayUploadedImage(imageUrl, file.name);
+            } catch (error) {
+                this.showError(`Failed to upload ${file.name}: ${error.message}`);
             }
         }
+
+        // Update send button state after upload
+        this.updateSendButtonState();
+        
+        // Clear the file input so user can select the same files again if needed
+        this.elements.fileInput.value = '';
     }
 
     /**
@@ -412,9 +435,35 @@ class PuterUIManager {
         const previews = document.querySelectorAll('.image-preview');
         previews.forEach(preview => {
             if (preview.querySelector('.image-name').textContent === fileName) {
-                preview.remove();
+                preview.style.opacity = '0';
+                preview.style.transform = 'scale(0.8)';
+                setTimeout(() => preview.remove(), 200);
             }
         });
+
+        // Update send button state after removal
+        this.updateSendButtonState();
+    }
+
+    /**
+     * Show system message
+     */
+    showMessage(content, type = 'system') {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        messageDiv.innerHTML = `<div class="message-content">${content}</div>`;
+        this.elements.messages.appendChild(messageDiv);
+        this.scrollToBottom();
+        
+        // Auto-remove system messages after 3 seconds
+        if (type === 'system') {
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.style.opacity = '0';
+                    setTimeout(() => messageDiv.remove(), 300);
+                }
+            }, 3000);
+        }
     }
 
     /**
@@ -789,16 +838,39 @@ class PuterUIManager {
         welcomeDiv.className = 'message assistant welcome';
         welcomeDiv.innerHTML = `
             <div class="message-content">
-                <strong>Welcome to Puter AI Chatbot!</strong><br><br>
+                <strong>🤖 Welcome to Puter AI Chatbot!</strong><br><br>
                 I can help you with:<br>
-                • Text conversations <br>
-                • Image analysis and vision tasks<br>
-                • Image generation with DALL-E 3<br>
-                • Streaming responses for real-time chat<br><br>
-                Try the quick examples below or start typing your message!
+                💬 Text conversations and Q&A<br>
+                👁️ Image analysis (GPT-4 Vision)<br>
+                🎨 Image generation (DALL-E 3)<br>
+                ⚡ Real-time streaming responses<br><br>
+                <small>💡 Tip: Press Enter to send, Shift+Enter for new line</small>
             </div>
         `;
         this.elements.messages.appendChild(welcomeDiv);
+        
+        // Add keyboard shortcuts
+        this.setupKeyboardShortcuts();
+    }
+
+    /**
+     * Setup keyboard shortcuts for better UX
+     */
+    setupKeyboardShortcuts() {
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + / to focus message input
+            if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+                e.preventDefault();
+                this.elements.messageInput.focus();
+            }
+            
+            // Escape to clear input
+            if (e.key === 'Escape' && document.activeElement === this.elements.messageInput) {
+                this.elements.messageInput.value = '';
+                this.autoResizeTextarea();
+                this.updateSendButtonState();
+            }
+        });
     }
 
     /**
@@ -811,6 +883,29 @@ class PuterUIManager {
             this.elements.sendButton.textContent = 'Send';
         } else {
             this.elements.sendButton.textContent = 'Sending...';
+        }
+    }
+
+    /**
+     * Update send button state based on input content
+     */
+    updateSendButtonState() {
+        const hasText = this.elements.messageInput.value.trim().length > 0;
+        const hasImages = this.uploadedImages.length > 0;
+        const hasContent = hasText || hasImages;
+        
+        // Enable/disable send button based on content
+        if (!this.isProcessing) {
+            this.elements.sendButton.disabled = !hasContent;
+            
+            // Update button appearance
+            if (hasContent) {
+                this.elements.sendButton.classList.add('has-content');
+                this.elements.sendButton.style.opacity = '1';
+            } else {
+                this.elements.sendButton.classList.remove('has-content');
+                this.elements.sendButton.style.opacity = '0.6';
+            }
         }
     }
 
@@ -828,8 +923,8 @@ class PuterUIManager {
         textarea.style.height = 'auto';
         
         // Set height based on scrollHeight, with min and max limits
-        const minHeight = this.isMobile() ? 20 : 24; // Smaller min height on mobile
-        const maxHeight = this.isMobile() ? 120 : 140; // Adjusted max height
+        const minHeight = this.isMobile() ? 24 : 28;
+        const maxHeight = this.isMobile() ? 120 : 150;
         const newHeight = Math.min(Math.max(textarea.scrollHeight, minHeight), maxHeight);
         
         textarea.style.height = newHeight + 'px';
@@ -837,10 +932,13 @@ class PuterUIManager {
         // If content exceeds max height, enable scrolling
         if (textarea.scrollHeight > maxHeight) {
             textarea.style.overflowY = 'auto';
-            textarea.scrollTop = scrollTop; // Restore scroll position
+            textarea.scrollTop = scrollTop;
         } else {
             textarea.style.overflowY = 'hidden';
         }
+        
+        // Update send button state based on content
+        this.updateSendButtonState();
         
         // On mobile, ensure the input stays in view when resizing
         if (this.isMobile() && document.activeElement === textarea) {
@@ -850,7 +948,7 @@ class PuterUIManager {
                     block: 'end',
                     inline: 'nearest'
                 });
-            }, 50);
+            }, 100);
         }
     }
 

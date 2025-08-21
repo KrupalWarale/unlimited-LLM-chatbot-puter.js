@@ -4,12 +4,12 @@
   "description": "A modern, multimodal AI chatbot powered by the Puter platform. Experience seamless interactions with GPT-4, Claude, and DALL-E 3 with no backend required!",
   "main": "index.html",
   "scripts": {
-    "start": "python -m http.server 8080",
-    "dev": "npx http-server -p 8080"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
   "keywords": [
     "puter",
-    "ai-chatbot", 
+    "ai-chatbot",
     "multimodal",
     "gpt-4",
     "claude",

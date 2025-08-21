@@ -31,6 +31,10 @@
     box-sizing: border-box;
 }
 
+.hidden {
+    display: none !important;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: var(--background);
@@ -124,7 +128,7 @@ body {
 .bot-avatar {
     width: 48px;
     height: 48px;
-    background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+    background: linear-gradient(135deg, #10b981, #059669);
     border-radius: 16px;
     display: flex;
     align-items: center;
@@ -248,6 +252,10 @@ body {
     display: flex;
     flex-direction: column;
     background: rgba(248, 250, 252, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(226, 232, 240, 0.5);
+    flex-shrink: 0;
     min-height: 0;
 }
 
@@ -341,11 +349,23 @@ body {
     text-align: center;
 }
 
+.message.system .message-content {
+    background: #f0f9ff;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+    text-align: center;
+    font-size: 14px;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
 /* Enhanced Input Area */
 .input-area,
 .chat-input-area {
-    padding: 25px 30px 30px;
-    background: rgba(248, 250, 252, 0.8);
+    padding: 12px;
+    position: sticky;
+    bottom: 0;
+    background: rgba(248, 250, 252, 0.95);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border-top: 1px solid rgba(226, 232, 240, 0.5);
@@ -409,11 +429,29 @@ body {
 
 /* Mobile-specific input layout */
 .model-selector-mobile {
-    display: none;
+    display: block;
 }
 
 /* Android-optimized layout */
 @media (max-width: 768px) {
+
+    /* Hide header decorative overlay on small screens to prevent overlap */
+    .app-header::before,
+    .header::before { content: none; pointer-events: none; }
+
+    /* Ensure header content stays above */
+    .header-content, .status-indicator { position: relative; z-index: 2; }
+
+    /* Vision icon adjustable positioning for Android */
+    #visionIndicator .vision-icon {
+        position: relative;    /* change to absolute if you want free placement */
+        left: 0;               /* adjust +/- to move horizontally */
+        top: 0;                /* adjust if you need vertical nudge */
+        margin-left: 0px;    /* current left shift; tweak as needed */
+        margin-right: 0;       /* add spacing to the right if needed */
+        transform: translateX(0); /* use instead of margins if preferred */
+        z-index: 2;            /* keep above header background */
+    }
 
     /* Input area - vertical stack layout */
     .input-area {
@@ -421,30 +459,32 @@ body {
         flex-direction: column;
         gap: 8px;
         padding: 10px 12px;
-        max-width: 0px;
+
     }
 
     .input-actions>* {
         margin: 0 2px;
+        max-width: 0px;
+
     }
 
-    /* Model selector at top - compact for Android */
+    /* Model selector at top right for Android */
     .model-selector-mobile {
-        display: inline-block;
-        width: 50px !important;
-        max-width: 50px !important;
-        min-width: 50px !important;
         order: 1;
         /* Show first */
-        margin-bottom: 6px;
-        flex-shrink: 0;
-        overflow: hidden;
+        align-self: flex-end;
+        width: auto;
+        min-width: 120px;
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 3;
     }
 
-    /* Suggestions in middle */
+    /* Suggestions below model selector */
     .suggestions {
         order: 2;
-        margin-bottom: 6px;
+        /* Show after model selector */
+        width: 100%;
     }
 
     /* Input container at bottom - horizontal layout */
@@ -459,6 +499,8 @@ body {
         border-radius: 16px;
         background: white;
         border: 1px solid rgba(226, 232, 240, 0.8);
+        flex: 1;
+        min-width: 0;
     }
 
     .input-wrapper {
@@ -470,27 +512,25 @@ body {
     }
 
     .model-selector-mobile .model-selector {
-        width: 50px !important;
-        max-width: 50px !important;
-        min-width: 50px !important;
-        padding: 1px 2px;
-        font-size: 7px;
-        border-radius: 4px;
-        background: rgba(248, 250, 252, 0.95);
-        border: 1px solid rgba(226, 232, 240, 0.7);
-        height: 22px;
-        max-height: 22px;
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 12px;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+        border: none;
+        height: auto;
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
         background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3e%3cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3e%3c/svg%3e");
         background-repeat: no-repeat;
-        background-position: right 6px center;
-        background-size: 12px;
-        padding-right: 24px;
+        background-position: right 12px center;
+        background-size: 16px;
+        padding-right: 36px;
+        margin-bottom: 0;
+        color: #475569;
+        font-weight: 500;
+        outline: none;
     }
 
     /* Hide desktop model selector on mobile */
@@ -498,14 +538,14 @@ body {
         display: none;
     }
 
-    /* Make dropdown options compact */
+    /* Make dropdown options readable */
     .model-selector-mobile .model-selector option {
-        font-size: 7px;
-        padding: 1px 2px;
+        font-size: 14px;
+        padding: 8px 12px;
     }
 
     .model-selector-mobile .model-selector optgroup {
-        font-size: 6px;
+        font-size: 12px;
         font-weight: 600;
     }
 }
@@ -631,6 +671,7 @@ textarea#messageInput::placeholder {
     background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
     border: none;
     border-radius: 15px;
+    margin-bottom: 6px;
     padding: 8px 12px;
     font-size: 12px;
     color: #475569;
@@ -638,6 +679,7 @@ textarea#messageInput::placeholder {
     transition: all 0.3s ease;
     font-weight: 500;
     outline: none;
+
 }
 
 .model-selector:hover,
@@ -682,6 +724,17 @@ button.primary:active {
     transform: translateX(1px);
 }
 
+.send-btn.has-content {
+    background: linear-gradient(135deg, #10b981, #059669);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.send-btn.has-content:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    transform: scale(1.05);
+}
+
 .send-btn .spinner {
     animation: spin 1s linear infinite;
     display: block;
@@ -693,22 +746,20 @@ button.primary:active {
     opacity: 0.7;
 }
 
-/* Enhanced Settings Sidebar */
+/* Clean Settings Sidebar */
 .settings-sidebar {
     position: fixed;
     top: 0;
-    right: -400px;
-    width: 350px;
+    right: -320px;
+    width: 300px;
     height: 100vh;
-    background: rgba(255, 255, 255, 0.95);
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    box-shadow: -2px 0 15px rgba(0, 0, 0, 0.1);
     padding: 0;
-    transition: right 0.3s ease, transform 0.3s ease-out;
+    transition: right 0.3s ease;
     z-index: 1000;
     overflow-y: auto;
-    transform: translateX(0);
+    border-left: 1px solid #e5e7eb;
 }
 
 .settings-sidebar.open {
@@ -716,41 +767,42 @@ button.primary:active {
 }
 
 .sidebar-header {
-    background: var(--puter-gradient);
-    color: white;
-    padding: 25px;
+    background: #f8fafc;
+    color: #1f2937;
+    padding: 16px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid #e5e7eb;
     margin-bottom: 0;
 }
 
 .sidebar-header h3,
 .settings-sidebar h3 {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 600;
     margin: 0;
-    color: white;
+    color: #1f2937;
 }
 
 .close-sidebar {
-    background: rgba(255, 255, 255, 0.2);
+    background: transparent;
     border: none;
-    border-radius: 8px;
-    width: 32px;
-    height: 32px;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    color: white;
-    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    color: #6b7280;
+    font-size: 18px;
 }
 
 .close-sidebar:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: rotate(90deg);
+    background: #f3f4f6;
+    color: #374151;
 }
 
 /* Enhanced Model Parameters */
@@ -764,15 +816,17 @@ button.primary:active {
 }
 
 .param-group {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f3f4f6;
 }
 
 .param-group label {
     display: block;
-    font-weight: 600;
+    font-weight: 500;
     color: #374151;
-    margin-bottom: 10px;
-    font-size: 14px;
+    margin-bottom: 8px;
+    font-size: 13px;
 }
 
 .checkbox-group {
@@ -834,13 +888,13 @@ button.primary:active {
 .input-with-value {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .param-slider {
     flex: 1;
-    height: 6px;
-    border-radius: 5px;
+    height: 4px;
+    border-radius: 2px;
     background: #e5e7eb;
     outline: none;
     -webkit-appearance: none;
@@ -849,32 +903,34 @@ button.primary:active {
 
 .param-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background: #6366f1;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .param-slider::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background: #6366f1;
     cursor: pointer;
     border: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .param-value {
-    background: #f3f4f6;
+    background: #f8fafc;
     padding: 4px 8px;
-    border-radius: 6px;
+    border-radius: 4px;
     font-size: 12px;
     font-weight: 500;
-    color: #374151;
-    min-width: 40px;
+    color: #6366f1;
+    min-width: 45px;
+    text-align: center;
+    border: 1px solid #e5e7eb;
     text-align: center;
 }
 
@@ -907,7 +963,10 @@ button.primary:active {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: scale(1);
+    animation: slideInUp 0.3s ease-out;
 }
 
 .image-preview:hover {
@@ -1116,7 +1175,13 @@ button.primary.loading {
         padding: 16px 12px;
         height: calc(100vh - 180px);
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
+    }
+
+    @supports (-webkit-overflow-scrolling: touch) {
+        .messages,
+        .chat-messages {
+            -webkit-overflow-scrolling: touch;
+        }
     }
 
     .message {
@@ -1136,6 +1201,7 @@ button.primary.loading {
         position: sticky;
         bottom: 0;
         background: rgba(248, 250, 252, 0.95);
+        -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
     }
 
@@ -1143,9 +1209,14 @@ button.primary.loading {
         gap: 6px;
         margin-bottom: 12px;
         overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
         padding-bottom: 4px;
         flex-wrap: nowrap;
+    }
+
+    @supports (-webkit-overflow-scrolling: touch) {
+        .suggestions {
+            -webkit-overflow-scrolling: touch;
+        }
     }
 
     .suggestion,
@@ -1242,8 +1313,8 @@ button.primary.loading {
     .messages,
     .chat-messages,
     .sidebar-content {
-        transform: translateZ(0);
         -webkit-transform: translateZ(0);
+        transform: translateZ(0);
     }
 
     /* Hide scrollbars on mobile for cleaner look */
@@ -1423,8 +1494,8 @@ input[type="file"]::file-selector-button {
 d Sidebar Styles for Model Categories and Memory */
 
 .sidebar-content {
-    padding: 0;
-    height: calc(100vh - 80px);
+    padding: 20px;
+    height: calc(100vh - 60px);
     overflow-y: auto;
 }
 
@@ -1516,6 +1587,7 @@ d Sidebar Styles for Model Categories and Memory */
     cursor: pointer;
     transition: all 0.3s ease;
     border: none;
+    -webkit-user-select: none;
     user-select: none;
 }
 
@@ -1973,8 +2045,15 @@ textarea#messageInput {
     .messages,
     .chat-messages,
     .sidebar-content {
-        -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;
+    }
+
+    @supports (-webkit-overflow-scrolling: touch) {
+        .messages,
+        .chat-messages,
+        .sidebar-content {
+            -webkit-overflow-scrolling: touch;
+        }
     }
 
     /* Hide address bar on scroll */
@@ -2055,7 +2134,14 @@ textarea#messageInput {
     .file-btn,
     .send-btn {
         image-rendering: -webkit-optimize-contrast;
-        image-rendering: crisp-edges;
+    }
+
+    @supports (image-rendering: crisp-edges) {
+        .bot-avatar,
+        .file-btn,
+        .send-btn {
+            image-rendering: crisp-edges;
+        }
     }
 }
 
@@ -2063,7 +2149,7 @@ textarea#messageInput {
 @media (max-width: 768px) {
     @media (orientation: portrait) {
         .suggestions {
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
         }
     }
 
@@ -2148,6 +2234,15 @@ textarea#messageInput {
         background: rgba(99, 102, 241, 0.2);
     }
 
+    /* Active state when GPT Vision is on (customizable) */
+    .file-btn.gpt-vision-active {
+        margin-left: -50px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        /* animation: visionPulse 2s ease-in-out infinite; */
+    }
+
     /* Enhanced send button for mobile */
     .send-btn {
         width: 48px;
@@ -2177,8 +2272,8 @@ textarea#messageInput {
     .input-container {
         position: relative;
         background: rgba(255, 255, 255, 0.98) !important;
-        backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
         border: 1px solid rgba(226, 232, 240, 0.8);
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
@@ -2193,8 +2288,6 @@ textarea#messageInput {
         display: flex;
         gap: 8px;
         overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
         -ms-overflow-style: none;
         padding: 0 2px 8px 2px;
         margin-bottom: 12px;
@@ -2202,6 +2295,18 @@ textarea#messageInput {
 
     .suggestions::-webkit-scrollbar {
         display: none;
+    }
+
+    @supports (-webkit-overflow-scrolling: touch) {
+        .suggestions {
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+
+    @supports (scrollbar-width: none) {
+        .suggestions {
+            scrollbar-width: none;
+        }
     }
 
     .suggestion {
@@ -2231,8 +2336,8 @@ textarea#messageInput {
         right: 0;
         z-index: 10;
         background: rgba(248, 250, 252, 0.95);
-        backdrop-filter: blur(15px);
         -webkit-backdrop-filter: blur(15px);
+        backdrop-filter: blur(15px);
         border-top: 1px solid rgba(226, 232, 240, 0.6);
         padding: 12px;
         margin: 0;
@@ -2446,19 +2551,37 @@ ct Model Selector for Mobile */
     .send-btn {
         width: 40px;
         height: 40px;
+        border-radius: 50%;
+        margin-left: auto;
     }
 }
 
 /* Extra small screens (phones in portrait) */
 @media (max-width: 480px) {
     .model-selector-mobile .model-selector {
-        font-size: 8px;
-        height: 22px;
-        min-height: 22px;
-        padding: 2px 16px 2px 4px;
-        background-size: 10px;
-        background-position: right 2px center;
-        padding-right: 16px;
+        font-size: 14px;
+    font-weight: 500;
+    color: #111;
+
+    height: auto;
+    min-height: 32px;
+    padding: 4px 28px 4px 12px;
+
+    /* ensure full text shows */
+    white-space: nowrap;      /* keep text in one line */
+    overflow: visible;        /* don't hide text */
+    text-overflow: clip;      /* remove "..." */
+    width: auto;              /* expand to fit text */
+    max-width: 100%;          /* don't overflow screen */
+
+    /* arrow styling */
+    background-size: 12px;
+    background-position: right 8px center;
+    background-repeat: no-repeat;
+
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
     }
 
     .input-container {
@@ -2659,6 +2782,7 @@ ct Model Selector for Mobile */
         display: flex;
         gap: 6px;
         flex-shrink: 0;
+        align-items: center;
     }
 
     .file-btn {
@@ -2671,6 +2795,7 @@ ct Model Selector for Mobile */
         width: 40px;
         height: 40px;
         border-radius: 50%;
+        margin-left: auto;
     }
 }
 
@@ -2699,4 +2824,83 @@ ct Model Selector for Mobile */
             font-size: 14px;
         }
     }
+}
+
+/* Anim
+ations for better UX */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Improved remove button */
+.remove-image {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.remove-image:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Better loading states */
+.send-btn.loading {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Smooth transitions for all interactive elements */
+.suggestion,
+.file-btn,
+.send-btn,
+.model-selector,
+.param-slider {
+    transition: all 0.2s ease;
 }

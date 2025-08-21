@@ -7,15 +7,6 @@ class PuterChatManager {
     constructor() {
         this.conversationHistory = [];
         this.currentStreamingMessage = null;
-        this.chatMemory = null;
-    }
-
-    /**
-     * Set chat memory instance
-     */
-    setMemory(memoryInstance) {
-        this.chatMemory = memoryInstance;
-        console.log('✅ Chat memory integrated with chat manager');
     }
 
     /**
@@ -31,49 +22,10 @@ class PuterChatManager {
 
         const currentModel = puterUIManager.currentModel;
 
-        // Use the new model config system
-        let model;
-        if (window.puterApp && window.puterApp.modelConfig) {
-            const modelData = window.puterApp.modelConfig.getModelById(currentModel);
-            const capabilities = window.puterApp.modelConfig.getModelCapabilities(currentModel);
-
-            if (!modelData) {
-                throw new Error(`Unknown model: ${currentModel}`);
-            }
-
-            // Create a model object compatible with the old system
-            model = {
-                name: modelData.name,
-                id: modelData.id,
-                provider: modelData.provider,
-                type: capabilities.imageGeneration ? 'image-generation' : 'chat',
-                supports: {
-                    vision: capabilities.vision || capabilities.imageAnalysis,
-                    streaming: capabilities.streaming,
-                    images: capabilities.supportsImageInput
-                },
-                parameters: {
-                    model: modelData.id,
-                    max_tokens: capabilities.maxTokens || 512,
-                    temperature: 0.7
-                }
-            };
-        } else {
-            // Fallback to old system
-            model = puterModelCapabilities.getModel(currentModel);
-            if (!model) {
-                throw new Error(`Unknown model: ${currentModel}`);
-            }
-        }
-
-        // Add user message to memory if enabled
-        if (this.chatMemory && this.isMemoryEnabled()) {
-            this.chatMemory.addMessage({
-                role: 'user',
-                content: message,
-                images: images.length > 0 ? images.map(img => img.name) : undefined,
-                model: model.name
-            });
+        // Get model configuration
+        const model = puterModelCapabilities.getModel(currentModel);
+        if (!model) {
+            throw new Error(`Unknown model: ${currentModel}`);
         }
 
         try {
@@ -189,15 +141,7 @@ class PuterChatManager {
                 }
             }
 
-            // Add complete streaming response to memory if enabled
-            if (this.chatMemory && this.isMemoryEnabled() && fullContent) {
-                this.chatMemory.addMessage({
-                    role: 'assistant',
-                    content: fullContent,
-                    model: model ? model.name : 'unknown',
-                    streaming: true
-                });
-            }
+
 
             puterUIManager.completeStreamingMessage(streamingMessageDiv);
 
@@ -207,13 +151,7 @@ class PuterChatManager {
         }
     }
 
-    /**
-     * Check if memory is enabled
-     */
-    isMemoryEnabled() {
-        // Memory is disabled since we removed the remember chat checkbox
-        return false;
-    }
+
 
     /**
      * Display regular chat response
@@ -301,14 +239,7 @@ class PuterChatManager {
 
         // Content extracted successfully
 
-        // Add assistant response to memory if enabled
-        if (this.chatMemory && this.isMemoryEnabled() && content) {
-            this.chatMemory.addMessage({
-                role: 'assistant',
-                content: content,
-                model: model ? model.name : 'unknown'
-            });
-        }
+
 
         puterUIManager.displayMessage(content, 'assistant');
     }

@@ -3,15 +3,17 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#6366f1">
+    <meta name="msapplication-TileColor" content="#6366f1">
+    <script>(function(){var ua=navigator.userAgent;var isChromiumFamily=/\b(Chrome|Chromium|Edg)\/\d+/.test(ua)||(/\bOPR\/\d+/.test(ua)&&/\bChrome\/\d+/.test(ua))||/\bAndroid\b/.test(ua);if(!isChromiumFamily){return;}function setThemeMeta(){var lightColor='#6366f1';var darkColor='#0b0f1a';var existing=document.querySelectorAll('meta[name="theme-color"]');existing.forEach(function(n){if(n&&n.parentNode){n.parentNode.removeChild(n);}});var base=document.createElement('meta');base.name='theme-color';base.content=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?darkColor:lightColor;document.head.appendChild(base);if(window.matchMedia){var light=document.createElement('meta');light.name='theme-color';light.content=lightColor;light.setAttribute('media','(prefers-color-scheme: light)');document.head.appendChild(light);var dark=document.createElement('meta');dark.name='theme-color';dark.content=darkColor;dark.setAttribute('media','(prefers-color-scheme: dark)');document.head.appendChild(dark);var mq=window.matchMedia('(prefers-color-scheme: dark)');if(mq.addEventListener){mq.addEventListener('change',setThemeMeta);}else if(mq.addListener){mq.addListener(setThemeMeta);}}}setThemeMeta();})();</script>
     <title>Puter AI Chatbot</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMyIgZmlsbD0iIzYzNjZmMSIvPgo8cGF0aCBkPSJtMTIgMWgwbTYuMDcgMy42TDE4IDVtNS42NiA2LjA3TDIzIDEybTAtNi4wN0wyMyAxMm0tLjM0IDUuNjZMMjMgMTJtLTUuNjYgNS42NkwxOCAxOW0tNi4wNy0uMzRMMTIgMjNtMC02LjA3TDEyIDIzbS02LjA3LS4zNEw2IDE5bS0uMzQtNS42NkwxIDEybTAtNi4wN0wxIDEybS4zNC01LjY2TDYgNW02LjA3LS4zNEwxMiAxbTAtNi4wN0wxMiAxIiBzdHJva2U9IiM2MzY2ZjEiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4K">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMyIgZmlsbD0iIzYzNjZmMSIvPgo8cGF0aCBkPSJtMTIgMWgwbTYuMDcgMy42TDE4IDVtNS42NiA2LjA3TDIzIDEybTAtNi4wN0wyMyAxMm0tLjM0IDUuNjZMMjMgMTJtLTUuNjYgNS42NkwxOCAxOW0tNi4wNy0uMzRMMTIgMjNtMC02LjA3TDEyIDIzbS02LjA3LS4zNEw2IDE5bS0uMzQtNS42NkwxIDEybTAtNi4wN0wxIDEybS4zNC01LjY2TDYgNW02LjA3LS4zNEwxMiAxbTAtNi4wN0wxMiAxIiBzdHJva2U9IiM2MzY2ZjEiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4K">
     <!-- Include Puter.js library -->
     <script src="https://js.puter.com/v2/"></script>
 </head>
@@ -25,7 +27,7 @@
                     <div class="header-text">
                         <h1>Puter AI Assistant</h1>
                         <p>Chat with AI models powered by Puter platform</p>
-                        <div id="visionIndicator" class="vision-indicator" style="display: none;">
+                        <div id="visionIndicator" class="vision-indicator hidden">
                             <span class="vision-icon">👁️</span>
                             <span class="vision-text">GPT Vision Active</span>
                         </div>
@@ -120,10 +122,10 @@
                 <div class="input-container">
                     <div class="input-wrapper">
                         <textarea id="messageInput" class="message-input" placeholder="Ask me anything... I'm here to help!"
-                            rows="1" autocomplete="off" autocorrect="on" autocapitalize="sentences" spellcheck="true"></textarea>
+                            rows="1" autocomplete="off" autocorrect="on" spellcheck="true"></textarea>
                         <div class="input-actions">
                             <div class="file-upload">
-                                <input type="file" id="fileInput" accept="image/*" multiple style="display: none !important; position: absolute; left: -9999px; opacity: 0; width: 0; height: 0;"
+                                <input type="file" id="fileInput" class="file-input-hidden" accept="image/*" multiple
                                     title="Upload images for GPT-4 Vision analysis">
                                 <button class="file-btn" onclick="document.getElementById('fileInput').click()"
                                     title="Upload images for GPT-4 Vision">
@@ -146,142 +148,36 @@
             </div>
         </div>
 
+        <!-- Simple settings panel -->
         <div id="settingsSidebar" class="settings-sidebar">
             <div class="sidebar-header">
-                <h3>AI Models & Settings</h3>
-                <button class="close-sidebar" title="Close settings sidebar">
-                    <span class="visually-hidden">Close settings sidebar</span>
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
-                    </svg>
-                </button>
+                <h3>Settings</h3>
+                <button class="close-sidebar" title="Close settings">×</button>
             </div>
-
             <div class="sidebar-content">
-                <!-- Memory controls removed - chats are not stored -->
-
-                <!-- Model Categories -->
-                <div class="model-categories">
-                    <!-- Chat Models -->
-                    <div class="model-category">
-                        <div class="category-header" data-category="chat">
-                            <span class="category-icon">💬</span>
-                            <span class="category-title">Chat Models</span>
-                            <span class="category-toggle">▼</span>
-                        </div>
-                        <div class="category-content" id="chatModels">
-                            <!-- Chat models will be populated here -->
-                        </div>
-                    </div>
-
-                    <!-- Vision Models -->
-                    <div class="model-category">
-                        <div class="category-header" data-category="vision">
-                            <span class="category-icon">👁️</span>
-                            <span class="category-title">Vision Models</span>
-                            <span class="category-toggle">▼</span>
-                        </div>
-                        <div class="category-content" id="visionModels">
-                            <!-- Vision models will be populated here -->
-                        </div>
-                    </div>
-
-                    <!-- Text-to-Image Models -->
-                    <div class="model-category">
-                        <div class="category-header" data-category="txt2img">
-                            <span class="category-icon">🎨</span>
-                            <span class="category-title">Text-to-Image</span>
-                            <span class="category-toggle">▼</span>
-                        </div>
-                        <div class="category-content" id="txt2imgModels">
-                            <!-- Text-to-image models will be populated here -->
-                        </div>
-                    </div>
-
-                    <!-- Image-to-Text Models -->
-                    <div class="model-category">
-                        <div class="category-header" data-category="img2txt">
-                            <span class="category-icon">📝</span>
-                            <span class="category-title">Image-to-Text</span>
-                            <span class="category-toggle">▼</span>
-                        </div>
-                        <div class="category-content" id="img2txtModels">
-                            <!-- Image-to-text models will be populated here -->
-                        </div>
-                    </div>
-
-                    <!-- Text-to-Speech Models -->
-                    <div class="model-category">
-                        <div class="category-header" data-category="txt2speech">
-                            <span class="category-icon">🔊</span>
-                            <span class="category-title">Text-to-Speech</span>
-                            <span class="category-toggle">▼</span>
-                        </div>
-                        <div class="category-content" id="txt2speechModels">
-                            <!-- Text-to-speech models will be populated here -->
-                        </div>
+                <div class="param-group">
+                    <label for="maxTokensInput" class="param-label">Max Tokens:</label>
+                    <div class="input-with-value">
+                        <input type="range" id="maxTokensInput" value="1000" min="1" max="4000" class="param-slider">
+                        <span class="param-value" id="maxTokensValue">1000</span>
                     </div>
                 </div>
-
-                <!-- Model Parameters -->
-                <div class="model-params">
-                    <div class="param-group">
-                        <label class="param-label">⚙️ Model Options</label>
-                        <div class="checkbox-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="streamMode" checked>
-                                <span class="checkmark"></span>
-                                Stream Response
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="param-group">
-                        <label for="maxTokensInput" class="param-label">Max Tokens:</label>
-                        <div class="input-with-value">
-                            <input type="range" id="maxTokensInput" value="1000" min="1" max="4000"
-                                class="param-slider">
-                            <span class="param-value" id="maxTokensValue">1000</span>
-                        </div>
-                    </div>
-
-                    <div class="param-group">
-                        <label for="temperatureInput" class="param-label">Temperature:</label>
-                        <div class="input-with-value">
-                            <input type="range" id="temperatureInput" value="0.7" step="0.1" min="0" max="1"
-                                class="param-slider">
-                            <span class="param-value" id="temperatureValue">0.7</span>
-                        </div>
+                <div class="param-group">
+                    <label for="temperatureInput" class="param-label">Temperature:</label>
+                    <div class="input-with-value">
+                        <input type="range" id="temperatureInput" value="0.7" step="0.1" min="0" max="1" class="param-slider">
+                        <span class="param-value" id="temperatureValue">0.7</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="js/puterModelConfig.js"></script>
-    <script src="js/puterChatMemory.js"></script>
-    <script src="js/puterSidebarManager.js"></script>
     <script src="js/puterModelCapabilities.js"></script>
     <script src="js/puterVisionHandler.js"></script>
     <script src="js/puterUIManager.js"></script>
     <script src="js/puterChatManager.js"></script>
     <script src="js/puterApp.js"></script>
-    
-    <!-- Service Worker for Mobile Performance -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then((registration) => {
-                        console.log('SW registered: ', registration);
-                    })
-                    .catch((registrationError) => {
-                        console.log('SW registration failed: ', registrationError);
-                    });
-            });
-        }
-    </script>
 </body>
 
 </html>
