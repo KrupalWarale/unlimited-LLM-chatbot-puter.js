@@ -89,6 +89,20 @@ class PuterUIManager {
             this.autoResizeTextarea();
         });
 
+        // Hide/show suggestions around input focus for small screens
+        this.elements.messageInput.addEventListener('focus', () => {
+            const suggestions = document.getElementById('suggestions');
+            if (window.innerWidth <= 768 && suggestions) {
+                suggestions.classList.add('hidden');
+            }
+        });
+        this.elements.messageInput.addEventListener('blur', () => {
+            const suggestions = document.getElementById('suggestions');
+            if (window.innerWidth <= 768 && suggestions) {
+                suggestions.classList.remove('hidden');
+            }
+        });
+
         // File input
         this.elements.fileInput.addEventListener('change', (e) => {
             this.handleFileUpload(e.target.files);
