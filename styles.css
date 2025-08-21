@@ -2413,6 +2413,7 @@ textarea#messageInput {
 
     .input-container {
         padding: 10px 14px;
+        
     }
 
     .suggestions {
@@ -2523,6 +2524,7 @@ ct Model Selector for Mobile */
     .input-container {
         padding: 8px 12px;
         gap: 6px;
+        margin-bottom: 60px;
     }
 
     /* Adjust input wrapper */
@@ -2586,6 +2588,7 @@ ct Model Selector for Mobile */
 
     .input-container {
         padding: 6px 10px;
+        margin-bottom: 60px;
     }
 
     .file-btn {
