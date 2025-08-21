@@ -1,6 +1,6 @@
 # Puter AI Chatbot
 
-A clean, efficient AI chatbot powered by the Puter platform. Chat with multiple AI models including GPT-4, Claude, and DALL-E 3 with no backend required!
+A clean, efficient AI chatbot powered by the Puter platform. Chat with multiple AI models including OpenAi, Gemini, Claude, and DALL-E 3 with no backend required!
 
 ## 🌟 Features
 
@@ -144,3 +144,4 @@ MIT License - free to use and modify.
 ---
 
 **Built with Puter.js - Simple, Clean, Efficient**
+
