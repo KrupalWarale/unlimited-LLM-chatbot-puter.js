@@ -145,3 +145,7 @@ MIT License - free to use and modify.
 
 **Built with Puter.js - Simple, Clean, Efficient**
 
+## update 
+ * MultiLLM Bot Has been Added to this repository
+ *  [![Alt text](https://camo.githubusercontent.com/0a1f54b875ceac9921e0fda1bead17cfecfb2b281824173d92bf27cbcfd8c662/68747470733a2f2f6769746875622d726561646d652d73746174732e76657263656c2e6170702f6170692f70696e2f3f757365726e616d653d4b727570616c576172616c65267265706f3d467265652d756e6c696d697465642d4d756c74694c4c4d2d63686174626f742d50757465722e6a73267468656d653d7261646963616c)](https://github.com/KrupalWarale/Free-unlimited-MultiLLM-chatbot-Puter.js/tree/main?tab=readme-ov-file)
+
